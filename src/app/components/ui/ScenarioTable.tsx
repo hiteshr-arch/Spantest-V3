@@ -31,7 +31,6 @@ type ViewMode = "scenario" | "testcase";
 interface ScenarioTableProps {
   scenarios: Scenario[];
   showTestCases: boolean;
-  /** Controlled from Generator.tsx so GeneratorChat can also drive navigation */
   viewMode: "scenario" | "testcase";
   onViewModeChange: (mode: "scenario" | "testcase") => void;
   onGenerateTC: (selectedIds: string[]) => void;
@@ -41,7 +40,7 @@ interface ScenarioTableProps {
   activeTestType: TestType | null;
   onAddScenario: (scenario: Scenario) => void;
   onUpdateScenario: (updated: Scenario) => void;
-  /** Kept for API compatibility — script view removed from scope */
+  onSaveAndContinue: (selectedIds: string[]) => void;
   initialScriptView?: { scenarios: Scenario[]; framework?: string } | null;
   onScriptViewConsumed?: () => void;
 }
@@ -116,28 +115,27 @@ function EditScenarioForm({
   };
 
   return (
-    <div className="scenario-edit border border-[#e2dff0] rounded-lg bg-white p-4">
-      {/* title & meta row */}
-      <div className="flex items-start gap-3 mb-3">
+    <div className="scenario-edit border border-[#e2dff0] rounded-xl bg-white p-5">
+      <div className="flex items-start gap-4 mb-4">
         <div className="flex-1">
-          <label className="!text-[#8b87a0] text-[10px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+          <label className="!text-[#8b87a0] text-[12px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
             Title
           </label>
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            style={{ fontSize: 12, fontFamily: "'DM Sans', sans-serif", height: 34 }}
+            style={{ fontSize: 14, fontFamily: "'DM Sans', sans-serif", height: 38 }}
           />
         </div>
-        <div className="w-[100px]">
-          <label className="!text-[#8b87a0] text-[10px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+        <div className="w-[120px]">
+          <label className="!text-[#8b87a0] text-[12px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
             Priority
           </label>
           <Select
             value={priority}
             onChange={(v) => setPriority(v as Scenario["priority"])}
             className="w-full"
-            style={{ height: 34 }}
+            style={{ height: 38 }}
             options={[
               { label: "High", value: "High" },
               { label: "Medium", value: "Medium" },
@@ -145,15 +143,15 @@ function EditScenarioForm({
             ]}
           />
         </div>
-        <div className="w-[110px]">
-          <label className="!text-[#8b87a0] text-[10px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+        <div className="w-[130px]">
+          <label className="!text-[#8b87a0] text-[12px] mb-1 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
             Category
           </label>
           <Select
             value={category}
             onChange={(v) => setCategory(v as Scenario["category"])}
             className="w-full"
-            style={{ height: 34 }}
+            style={{ height: 38 }}
             options={[
               { label: "Positive", value: "Positive" },
               { label: "Negative", value: "Negative" },
@@ -163,28 +161,25 @@ function EditScenarioForm({
         </div>
       </div>
 
-      {/* steps */}
       {!isApi && steps.length > 0 && (
-        <div className="mb-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="!text-[#8b87a0] text-[10px]" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
-              Test Steps
-            </span>
-          </div>
+        <div className="mb-4">
+          <span className="!text-[#8b87a0] text-[12px] mb-2 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+            Test Steps
+          </span>
           <div className="flex flex-col gap-2">
             {steps.map((s, i) => (
-              <div key={s.id} className="flex items-start gap-2 p-2 rounded bg-[#faf9ff] border border-[#f3f0fb]">
-                <span className="!text-[#b0adbe] text-[10px] mt-1 w-[18px] shrink-0 text-center">{i + 1}</span>
+              <div key={s.id} className="flex items-start gap-2 p-3 rounded-lg bg-[#faf9ff] border border-[#f3f0fb]">
+                <span className="!text-[#b0adbe] text-[12px] mt-1 w-[20px] shrink-0 text-center">{i + 1}</span>
                 <div className="flex-1 grid grid-cols-4 gap-2">
-                  <Input placeholder="Precondition" value={s.precondition} onChange={(e) => updateStep(i, "precondition", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Step" value={s.step} onChange={(e) => updateStep(i, "step", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Test Data" value={s.testData} onChange={(e) => updateStep(i, "testData", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Expected Result" value={s.expectedResult} onChange={(e) => updateStep(i, "expectedResult", e.target.value)} style={{ fontSize: 11, height: 30 }} />
+                  <Input placeholder="Precondition" value={s.precondition} onChange={(e) => updateStep(i, "precondition", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Step" value={s.step} onChange={(e) => updateStep(i, "step", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Test Data" value={s.testData} onChange={(e) => updateStep(i, "testData", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Expected Result" value={s.expectedResult} onChange={(e) => updateStep(i, "expectedResult", e.target.value)} style={{ fontSize: 13, height: 34 }} />
                 </div>
                 {!hideStepEdit && (
                   <button
                     onClick={() => removeStep(i)}
-                    className="flex items-center justify-center w-[22px] h-[22px] mt-[2px] rounded bg-transparent border-0 !text-[#b0adbe] hover:!text-[#d4183d] cursor-pointer text-[12px]"
+                    className="flex items-center justify-center w-[26px] h-[26px] mt-[2px] rounded bg-transparent border-0 !text-[#b0adbe] hover:!text-[#d4183d] cursor-pointer text-[14px]"
                   >
                     <MinusCircleOutlined />
                   </button>
@@ -195,33 +190,30 @@ function EditScenarioForm({
         </div>
       )}
 
-      {/* API steps */}
       {isApi && apiSteps.length > 0 && (
-        <div className="mb-3 overflow-x-auto">
-          <div className="flex items-center justify-between mb-2">
-            <span className="!text-[#8b87a0] text-[10px]" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
-              API Test Steps
-            </span>
-          </div>
+        <div className="mb-4 overflow-x-auto">
+          <span className="!text-[#8b87a0] text-[12px] mb-2 block" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+            API Test Steps
+          </span>
           <div className="flex flex-col gap-2">
             {apiSteps.map((s, i) => (
-              <div key={s.id} className="flex items-start gap-2 p-2 rounded bg-[#faf9ff] border border-[#f3f0fb]">
-                <span className="!text-[#b0adbe] text-[10px] mt-1 w-[18px] shrink-0 text-center">{i + 1}</span>
+              <div key={s.id} className="flex items-start gap-2 p-3 rounded-lg bg-[#faf9ff] border border-[#f3f0fb]">
+                <span className="!text-[#b0adbe] text-[12px] mt-1 w-[20px] shrink-0 text-center">{i + 1}</span>
                 <div className="flex-1 grid grid-cols-3 gap-2">
-                  <Input placeholder="URL" value={s.url} onChange={(e) => updateStep(i, "url", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Endpoint" value={s.endpoint} onChange={(e) => updateStep(i, "endpoint", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Select value={s.method} onChange={(v) => updateStep(i, "method", v)} options={["GET", "POST", "PUT", "PATCH", "DELETE"].map((m) => ({ label: m, value: m }))} className="w-full" style={{ height: 30 }} />
-                  <Input placeholder="Authentication" value={s.authentication} onChange={(e) => updateStep(i, "authentication", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Header" value={s.header} onChange={(e) => updateStep(i, "header", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Params" value={s.params} onChange={(e) => updateStep(i, "params", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Payload" value={s.payload} onChange={(e) => updateStep(i, "payload", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Status Code" value={s.outputStatusCode} onChange={(e) => updateStep(i, "outputStatusCode", e.target.value)} style={{ fontSize: 11, height: 30 }} />
-                  <Input placeholder="Expected Response" value={s.expectedResponse} onChange={(e) => updateStep(i, "expectedResponse", e.target.value)} style={{ fontSize: 11, height: 30 }} />
+                  <Input placeholder="URL" value={s.url} onChange={(e) => updateStep(i, "url", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Endpoint" value={s.endpoint} onChange={(e) => updateStep(i, "endpoint", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Select value={s.method} onChange={(v) => updateStep(i, "method", v)} options={["GET", "POST", "PUT", "PATCH", "DELETE"].map((m) => ({ label: m, value: m }))} className="w-full" style={{ height: 34 }} />
+                  <Input placeholder="Authentication" value={s.authentication} onChange={(e) => updateStep(i, "authentication", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Header" value={s.header} onChange={(e) => updateStep(i, "header", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Params" value={s.params} onChange={(e) => updateStep(i, "params", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Payload" value={s.payload} onChange={(e) => updateStep(i, "payload", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Status Code" value={s.outputStatusCode} onChange={(e) => updateStep(i, "outputStatusCode", e.target.value)} style={{ fontSize: 13, height: 34 }} />
+                  <Input placeholder="Expected Response" value={s.expectedResponse} onChange={(e) => updateStep(i, "expectedResponse", e.target.value)} style={{ fontSize: 13, height: 34 }} />
                 </div>
                 {!hideStepEdit && (
                   <button
                     onClick={() => removeStep(i)}
-                    className="flex items-center justify-center w-[22px] h-[22px] mt-[2px] rounded bg-transparent border-0 !text-[#b0adbe] hover:!text-[#d4183d] cursor-pointer text-[12px]"
+                    className="flex items-center justify-center w-[26px] h-[26px] mt-[2px] rounded bg-transparent border-0 !text-[#b0adbe] hover:!text-[#d4183d] cursor-pointer text-[14px]"
                   >
                     <MinusCircleOutlined />
                   </button>
@@ -232,15 +224,14 @@ function EditScenarioForm({
         </div>
       )}
 
-      {/* add step + actions */}
       <div className="flex items-center justify-between">
         {!hideStepEdit ? (
           <button
             onClick={addStep}
-            className="flex items-center gap-1 px-2 py-[4px] rounded bg-transparent border border-dashed border-[#d9d5e8] !text-[#7c3aed] text-[11px] cursor-pointer hover:border-[#7c3aed] hover:bg-[#f3eaff] transition-colors"
+            className="flex items-center gap-2 px-3 py-[6px] rounded-lg bg-transparent border border-dashed border-[#d9d5e8] !text-[#7c3aed] text-[13px] cursor-pointer hover:border-[#7c3aed] hover:bg-[#f3eaff] transition-colors"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
           >
-            <PlusOutlined className="text-[10px]" />
+            <PlusOutlined className="text-[12px]" />
             Add Step
           </button>
         ) : (
@@ -249,18 +240,18 @@ function EditScenarioForm({
         <div className="flex items-center gap-2">
           <button
             onClick={onCancel}
-            className="px-3 py-[5px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[11px] cursor-pointer hover:bg-[#faf9ff] transition-colors"
+            className="px-4 py-[7px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[13px] cursor-pointer hover:bg-[#faf9ff] transition-colors"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
           >
-            <CloseOutlined className="mr-1 text-[9px]" />
+            <CloseOutlined className="mr-1 text-[11px]" />
             Cancel
           </button>
           <button
             onClick={handleSaveChanges}
-            className="px-3 py-[5px] rounded-md border-0 bg-[#7c3aed] text-white text-[11px] cursor-pointer hover:bg-[#6d28d9] transition-colors"
+            className="px-4 py-[7px] rounded-lg border-0 bg-[#7c3aed] text-white text-[13px] cursor-pointer hover:bg-[#6d28d9] transition-colors"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
           >
-            <CheckOutlined className="mr-1 text-[9px]" />
+            <CheckOutlined className="mr-1 text-[11px]" />
             Save Changes
           </button>
         </div>
@@ -269,26 +260,149 @@ function EditScenarioForm({
   );
 }
 
-/* ─── scenario card ──────────────────────────────────────────────────── */
+/* ─── scenario grid card (scenario mode) ─────────────────────────────── */
 
-function ScenarioCard({
+function ScenarioGridCard({
   scenario,
   index,
   isSelected,
   onToggleSelect,
-  showSteps,
-  hideStepEdit,
   onUpdate,
 }: {
   scenario: Scenario;
   index: number;
   isSelected: boolean;
   onToggleSelect: () => void;
-  showSteps: boolean;
-  hideStepEdit?: boolean;
   onUpdate: (updated: Scenario) => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const isApi = scenario.type === "api";
+  const stepsCount = isApi ? scenario.apiSteps.length : scenario.steps.length;
+  const pColor = PRIORITY_COLORS[scenario.priority];
+  const cColor = CATEGORY_COLORS[scenario.category];
+
+  if (editing) {
+    return (
+      <div className="col-span-1">
+        <EditScenarioForm
+          scenario={scenario}
+          hideStepEdit={true}
+          onSave={(updated) => {
+            onUpdate(updated);
+            setEditing(false);
+          }}
+          onCancel={() => setEditing(false)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`relative flex flex-col gap-3 rounded-xl border p-4 cursor-pointer transition-all ${
+        isSelected
+          ? "border-[#7c3aed]/30 bg-[#faf5ff]"
+          : "border-[#f3f0fb] bg-white hover:border-[#d4c5f9] hover:shadow-sm"
+      }`}
+      style={{ borderLeft: `3px solid ${isSelected ? "#7c3aed" : "#c4b5fd"}` }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onToggleSelect}
+    >
+      {/* top row: checkbox + ID + type + edit */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={isSelected}
+            onChange={onToggleSelect}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span
+            className="!text-[#7c3aed] text-[12px] bg-[#f3eaff] rounded-md px-[8px] py-[3px] shrink-0"
+            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700 }}
+          >
+            {scenario.scenarioId}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Tag
+            className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px] !uppercase"
+            color={isApi ? "geekblue" : "cyan"}
+            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+          >
+            {isApi ? "API" : "UI"}
+          </Tag>
+          {hovered && (
+            <Tooltip title="Edit">
+              <button
+                onClick={(e) => { e.stopPropagation(); setEditing(true); }}
+                className="flex items-center justify-center w-[28px] h-[28px] rounded-md bg-transparent border-0 !text-[#8b87a0] hover:!text-[#7c3aed] hover:bg-[#f3eaff] cursor-pointer text-[14px] transition-colors"
+              >
+                <EditOutlined />
+              </button>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+
+      {/* title */}
+      <p
+        className="!text-[#0f0a1e] text-[13.5px] flex-1"
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 500,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          lineHeight: "1.5",
+        }}
+      >
+        {scenario.title}
+      </p>
+
+      {/* bottom row: priority + category + steps */}
+      <div className="flex items-center gap-[6px] flex-wrap">
+        <Tag
+          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
+          style={{ background: pColor.bg, color: pColor.text, borderColor: pColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+        >
+          {scenario.priority}
+        </Tag>
+        <Tag
+          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
+          style={{ background: cColor.bg, color: cColor.text, borderColor: cColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+        >
+          {scenario.category}
+        </Tag>
+        {stepsCount > 0 && (
+          <span className="ml-auto !text-[#b0adbe] text-[12px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            {stepsCount} step{stepsCount !== 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── test case list card (testcase mode) ────────────────────────────── */
+
+function TestCaseListCard({
+  scenario,
+  index,
+  isSelected,
+  onToggleSelect,
+  onUpdate,
+}: {
+  scenario: Scenario;
+  index: number;
+  isSelected: boolean;
+  onToggleSelect: () => void;
+  onUpdate: (updated: Scenario) => void;
+}) {
+  const [expanded, setExpanded] = useState(true);
   const [editing, setEditing] = useState(false);
   const [hovered, setHovered] = useState(false);
 
@@ -302,7 +416,6 @@ function ScenarioCard({
     return (
       <EditScenarioForm
         scenario={scenario}
-        hideStepEdit={hideStepEdit}
         onSave={(updated) => {
           onUpdate(updated);
           setEditing(false);
@@ -314,40 +427,39 @@ function ScenarioCard({
 
   return (
     <div
-      className={`scenario-card border rounded-lg transition-colors ${
-        isSelected ? "border-[#7c3aed]/30 bg-[#faf5ff]" : "border-[#f3f0fb] bg-white"
+      className={`border rounded-xl transition-colors ${
+        isSelected ? "border-[#2563eb]/30 bg-[#eff6ff]" : "border-[#e8f4fd] bg-white"
       }`}
+      style={{ borderLeft: `3px solid ${isSelected ? "#2563eb" : "#93c5fd"}` }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* card header */}
-      <div className="flex items-center gap-2 px-3 py-[10px]">
+      <div className="flex items-center gap-3 px-4 py-3">
         <Checkbox checked={isSelected} onChange={onToggleSelect} />
 
-        {hasSteps && showSteps && (
+        {hasSteps && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center justify-center w-[18px] h-[18px] rounded bg-transparent border-0 !text-[#b0adbe] hover:!text-[#7c3aed] cursor-pointer text-[10px]"
+            className="flex items-center justify-center w-[22px] h-[22px] rounded bg-transparent border-0 !text-[#93c5fd] hover:!text-[#2563eb] cursor-pointer text-[13px]"
           >
             {expanded ? <DownOutlined /> : <RightOutlined />}
           </button>
         )}
 
-        <span className="!text-[#b0adbe] text-[11px] w-[20px] shrink-0" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+        <span className="!text-[#b0adbe] text-[13px] w-[24px] shrink-0" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
           {index + 1}.
         </span>
 
-        {/* Scenario ID — raised to 12px */}
         <span
-          className="!text-[#7c3aed] text-[12px] shrink-0 bg-[#f3eaff] rounded px-[5px] py-[1px]"
-          style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+          className="!text-[#2563eb] text-[13px] shrink-0 bg-[#e8f4fd] rounded-md px-[8px] py-[3px]"
+          style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700 }}
         >
           {scenario.scenarioId}
         </span>
 
-        {/* Type tag — raised to 11.5px */}
         <Tag
-          className="!text-[11.5px] !px-[5px] !py-0 !m-0 !leading-[20px] !uppercase"
+          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px] !uppercase"
           color={isApi ? "geekblue" : "cyan"}
           style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
         >
@@ -355,31 +467,28 @@ function ScenarioCard({
         </Tag>
 
         <span
-          className="flex-1 !text-[#0f0a1e] text-[12.5px] truncate"
+          className="flex-1 !text-[#0f0a1e] text-[14px] truncate"
           style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
         >
           {scenario.title}
         </span>
 
-        {/* Priority tag — raised to 11.5px */}
         <Tag
-          className="!text-[11.5px] !px-[6px] !py-0 !m-0 !leading-[20px]"
+          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
           style={{ background: pColor.bg, color: pColor.text, borderColor: pColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
         >
           {scenario.priority}
         </Tag>
 
-        {/* Category tag — raised to 11.5px */}
         <Tag
-          className="!text-[11.5px] !px-[6px] !py-0 !m-0 !leading-[20px]"
+          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
           style={{ background: cColor.bg, color: cColor.text, borderColor: cColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
         >
           {scenario.category}
         </Tag>
 
-        {/* Steps count — raised to 12px */}
         {hasSteps && (
-          <span className="!text-[#8b87a0] text-[12px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          <span className="!text-[#8b87a0] text-[13px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
             {stepsCount} step{stepsCount !== 1 ? "s" : ""}
           </span>
         )}
@@ -388,7 +497,7 @@ function ScenarioCard({
           <Tooltip title="Edit">
             <button
               onClick={() => setEditing(true)}
-              className="flex items-center justify-center w-[24px] h-[24px] rounded bg-transparent border-0 !text-[#8b87a0] hover:!text-[#7c3aed] hover:bg-[#f3eaff] cursor-pointer text-[12px] transition-colors"
+              className="flex items-center justify-center w-[28px] h-[28px] rounded-md bg-transparent border-0 !text-[#8b87a0] hover:!text-[#2563eb] hover:bg-[#e8f4fd] cursor-pointer text-[14px] transition-colors"
             >
               <EditOutlined />
             </button>
@@ -397,15 +506,15 @@ function ScenarioCard({
       </div>
 
       {/* expanded steps — UI */}
-      {expanded && showSteps && !isApi && scenario.steps.length > 0 && (
-        <div className="px-3 pb-3">
-          <table className="w-full text-[11px] border-collapse" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      {expanded && !isApi && scenario.steps.length > 0 && (
+        <div className="px-4 pb-4">
+          <table className="w-full text-[13px] border-collapse" style={{ fontFamily: "'DM Sans', sans-serif" }}>
             <thead>
               <tr>
                 {["#", "Precondition", "Step", "Test Data", "Expected Result"].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-2 py-[5px] !text-[#8b87a0] bg-[#faf9ff] border-b border-[#f3f0fb] whitespace-nowrap"
+                    className="text-left px-3 py-[7px] !text-[#4c7be0] bg-[#f0f7ff] border-b border-[#dbeafe] whitespace-nowrap"
                     style={{ fontWeight: 600 }}
                   >
                     {h}
@@ -415,12 +524,12 @@ function ScenarioCard({
             </thead>
             <tbody>
               {scenario.steps.map((s, i) => (
-                <tr key={s.id} className="hover:bg-[#faf5ff]">
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#b0adbe]">{i + 1}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.precondition}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.step}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.testData}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.expectedResult}</td>
+                <tr key={s.id} className="hover:bg-[#eff6ff]">
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#b0adbe]">{i + 1}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568]">{s.precondition}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568]">{s.step}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568]">{s.testData}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568]">{s.expectedResult}</td>
                 </tr>
               ))}
             </tbody>
@@ -429,15 +538,15 @@ function ScenarioCard({
       )}
 
       {/* expanded steps — API */}
-      {expanded && showSteps && isApi && scenario.apiSteps.length > 0 && (
-        <div className="px-3 pb-3 overflow-x-auto">
-          <table className="w-full text-[11px] border-collapse" style={{ fontFamily: "'DM Sans', sans-serif", minWidth: 900 }}>
+      {expanded && isApi && scenario.apiSteps.length > 0 && (
+        <div className="px-4 pb-4 overflow-x-auto">
+          <table className="w-full text-[13px] border-collapse" style={{ fontFamily: "'DM Sans', sans-serif", minWidth: 960 }}>
             <thead>
               <tr>
                 {["#", "URL", "Endpoint", "Method", "Auth", "Header", "Params", "Payload", "Status", "Expected Response"].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-2 py-[5px] !text-[#8b87a0] bg-[#faf9ff] border-b border-[#f3f0fb] whitespace-nowrap"
+                    className="text-left px-3 py-[7px] !text-[#4c7be0] bg-[#f0f7ff] border-b border-[#dbeafe] whitespace-nowrap"
                     style={{ fontWeight: 600 }}
                   >
                     {h}
@@ -447,24 +556,24 @@ function ScenarioCard({
             </thead>
             <tbody>
               {scenario.apiSteps.map((s, i) => (
-                <tr key={s.id} className="hover:bg-[#faf5ff]">
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#b0adbe]">{i + 1}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px]">{s.url}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px]">{s.endpoint}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb]">
+                <tr key={s.id} className="hover:bg-[#eff6ff]">
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#b0adbe]">{i + 1}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] font-mono text-[12px]">{s.url}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] font-mono text-[12px]">{s.endpoint}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe]">
                     <Tag
-                      className="!text-[9px] !px-[5px] !py-0 !m-0 !leading-[16px]"
+                      className="!text-[11px] !px-[6px] !py-0 !m-0 !leading-[20px]"
                       color={s.method === "GET" ? "blue" : s.method === "POST" ? "green" : s.method === "DELETE" ? "red" : "orange"}
                     >
                       {s.method}
                     </Tag>
                   </td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] text-[10px]">{s.authentication}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] text-[10px] max-w-[120px] truncate">{s.header}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] text-[10px]">{s.params}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px] max-w-[140px] truncate">{s.payload}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.outputStatusCode}</td>
-                  <td className="px-2 py-[4px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px] max-w-[140px] truncate">{s.expectedResponse}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] text-[12px]">{s.authentication}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] text-[12px] max-w-[120px] truncate">{s.header}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] text-[12px]">{s.params}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] font-mono text-[12px] max-w-[140px] truncate">{s.payload}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] text-[12px]">{s.outputStatusCode}</td>
+                  <td className="px-3 py-[6px] border-b border-[#dbeafe] !text-[#4c4568] font-mono text-[12px] max-w-[140px] truncate">{s.expectedResponse}</td>
                 </tr>
               ))}
             </tbody>
@@ -489,17 +598,16 @@ export function ScenarioTable({
   activeTestType,
   onAddScenario,
   onUpdateScenario,
+  onSaveAndContinue,
 }: ScenarioTableProps) {
   const { message } = App.useApp();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [draftScenario, setDraftScenario] = useState<Scenario | null>(null);
 
-  /* ── internal TC tracking (viewMode itself lives in Generator.tsx) ─── */
   const [tcGenerated, setTcGenerated] = useState(false);
   const [editedSinceTc, setEditedSinceTc] = useState(false);
   const [tcGeneratedIds, setTcGeneratedIds] = useState<string[]>([]);
 
-  // When parent signals TC generation complete, switch to TC view
   useEffect(() => {
     if (showTestCases && scenarios.length > 0) {
       onViewModeChange("testcase");
@@ -508,7 +616,6 @@ export function ScenarioTable({
     }
   }, [showTestCases, scenarios]);
 
-  // When all scenarios are discarded, reset state
   useEffect(() => {
     if (scenarios.length === 0) {
       onViewModeChange("scenario");
@@ -518,7 +625,6 @@ export function ScenarioTable({
     }
   }, [scenarios]);
 
-  // Keep selection in sync with available scenarios
   useEffect(() => {
     setSelectedIds((prev) => {
       const validIds = new Set(scenarios.map((s) => s.id));
@@ -600,17 +706,14 @@ export function ScenarioTable({
     setDraftScenario(draft);
   };
 
-  /* ── derived state ─────────────────────────────────────────────────── */
   const hasScenarios = scenarios.length > 0;
   const selectedCount = selectedIds.size;
   const isScenarioView = viewMode === "scenario";
   const isTcView = viewMode === "testcase";
-  // In TC view show only the scenarios that were selected for generation
   const displayScenarios =
     isTcView && tcGeneratedIds.length > 0
       ? scenarios.filter((s) => tcGeneratedIds.includes(s.id))
       : scenarios;
-  // TC already generated with no edits — can navigate forward without re-generating
   const canViewTc = tcGenerated && !editedSinceTc;
 
   const toggleSelectAll = () => {
@@ -621,15 +724,11 @@ export function ScenarioTable({
     }
   };
 
-  /* ── navigation handlers ───────────────────────────────────────────── */
-
   const handleGoToTcView = () => {
     if (canViewTc) {
-      // Already generated, no edits — just navigate
       onViewModeChange("testcase");
       setSelectedIds(new Set());
     } else if (selectedCount > 0) {
-      // Trigger generation for selected scenarios only
       const ids = [...selectedIds];
       setTcGeneratedIds(ids);
       onGenerateTC(ids);
@@ -640,18 +739,13 @@ export function ScenarioTable({
     }
   };
 
-  /* ── bottom bar CTA label ──────────────────────────────────────────── */
   const tcCtaLabel = editedSinceTc && tcGenerated ? "Regenerate Test Cases" : "Generate Test Cases";
 
   return (
     <div className="scenario-table flex flex-col h-full">
 
       {/* ── toolbar ──────────────────────────────────────────────────── */}
-      {/*
-        pl-7 (28px) aligns the select-all checkbox with the per-row checkboxes,
-        which sit at list px-4 (16px) + card px-3 (12px) = 28px from the left edge.
-      */}
-      <div className="scenario-table__toolbar flex items-center gap-2 pl-7 pr-4 py-[10px] border-b border-[#f3f0fb] bg-white">
+      <div className="scenario-table__toolbar flex items-center gap-3 pl-8 pr-5 py-3 border-b border-[#f3f0fb] bg-white">
 
         {hasScenarios && (
           <>
@@ -661,17 +755,16 @@ export function ScenarioTable({
               onChange={toggleSelectAll}
             />
 
-            {/* Count label or selected badge */}
             {selectedCount > 0 ? (
               <span
-                className="!text-[#7c3aed] text-[11px] bg-[#f3eaff] rounded-full px-2 py-[2px]"
+                className={`text-[13px] rounded-full px-3 py-[3px] ${isScenarioView ? "!text-[#7c3aed] bg-[#f3eaff]" : "!text-[#2563eb] bg-[#e8f4fd]"}`}
                 style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
               >
                 {selectedCount} selected
               </span>
             ) : (
               <span
-                className="!text-[#8b87a0] text-[11px]"
+                className={`text-[13px] ${isScenarioView ? "!text-[#7c3aed]" : "!text-[#2563eb]"}`}
                 style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
               >
                 {displayScenarios.length} {isScenarioView ? "scenario" : "test case"}{displayScenarios.length !== 1 ? "s" : ""}
@@ -680,33 +773,30 @@ export function ScenarioTable({
 
             <div className="flex-1" />
 
-            {/* View Test Cases — navigation shortcut when TC already exists and nothing is selected */}
             {isScenarioView && canViewTc && selectedCount === 0 && (
               <Tooltip title="Navigate to generated test cases">
                 <button
                   onClick={() => { onViewModeChange("testcase"); setSelectedIds(new Set()); }}
-                  className="flex items-center gap-[5px] px-3 py-[5px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[11px] cursor-pointer hover:border-[#7c3aed] hover:!text-[#7c3aed] transition-colors"
+                  className="flex items-center gap-[6px] px-4 py-[6px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[13px] cursor-pointer hover:border-[#7c3aed] hover:!text-[#7c3aed] transition-colors"
                   style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
                 >
                   View Test Cases
-                  <ArrowRightOutlined className="text-[10px]" />
+                  <ArrowRightOutlined className="text-[12px]" />
                 </button>
               </Tooltip>
             )}
 
-            {/* Selection-triggered actions */}
             {selectedCount > 0 && (
               <>
-                {/* Save — visible in scenario view only; TC view uses the bottom bar */}
                 {isScenarioView && (
                   <Tooltip title="Save to Repository">
                     <button
                       onClick={() => onSave([...selectedIds])}
                       disabled={isSaveDisabled}
-                      className={`scenario-table__action-btn flex items-center gap-[5px] px-3 py-[5px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[11px] transition-colors ${isSaveDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-[#faf5ff] hover:border-[#7c3aed]"}`}
+                      className={`scenario-table__action-btn flex items-center gap-[6px] px-4 py-[6px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[13px] transition-colors ${isSaveDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-[#faf5ff] hover:border-[#7c3aed]"}`}
                       style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
                     >
-                      <SaveOutlined className="text-[12px]" />
+                      <SaveOutlined className="text-[14px]" />
                       Save
                     </button>
                   </Tooltip>
@@ -715,7 +805,7 @@ export function ScenarioTable({
                 <Tooltip title="Export CSV">
                   <button
                     onClick={handleExport}
-                    className="scenario-table__action-btn flex items-center justify-center w-[30px] h-[30px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[12px] cursor-pointer hover:bg-[#faf5ff] transition-colors"
+                    className="scenario-table__action-btn flex items-center justify-center w-[34px] h-[34px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[14px] cursor-pointer hover:bg-[#faf5ff] transition-colors"
                   >
                     <ExportOutlined />
                   </button>
@@ -731,7 +821,7 @@ export function ScenarioTable({
                 >
                   <Tooltip title="Discard selected">
                     <button
-                      className="scenario-table__action-btn flex items-center justify-center w-[30px] h-[30px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[12px] cursor-pointer hover:border-[#ffa39e] hover:!text-[#cf1322] hover:bg-[#fff1f0] transition-colors"
+                      className="scenario-table__action-btn flex items-center justify-center w-[34px] h-[34px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[14px] cursor-pointer hover:border-[#ffa39e] hover:!text-[#cf1322] hover:bg-[#fff1f0] transition-colors"
                     >
                       <DeleteOutlined />
                     </button>
@@ -740,15 +830,14 @@ export function ScenarioTable({
               </>
             )}
 
-            {/* Add — hidden when rows are selected */}
             {selectedCount === 0 && (
               <Tooltip title="Add scenario">
                 <button
                   onClick={handleAdd}
-                  className="scenario-table__action-btn flex items-center gap-[5px] px-3 py-[5px] rounded-md border border-[#e2dff0] bg-white !text-[#4c4568] text-[11px] cursor-pointer hover:bg-[#faf9ff] hover:border-[#b0adbe] transition-colors"
+                  className="scenario-table__action-btn flex items-center gap-[6px] px-4 py-[6px] rounded-lg border border-[#e2dff0] bg-white !text-[#4c4568] text-[13px] cursor-pointer hover:bg-[#faf9ff] hover:border-[#b0adbe] transition-colors"
                   style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
                 >
-                  <PlusOutlined className="text-[10px]" />
+                  <PlusOutlined className="text-[12px]" />
                   Add
                 </button>
               </Tooltip>
@@ -758,21 +847,21 @@ export function ScenarioTable({
 
         {!hasScenarios && (
           <div className="flex items-center gap-2">
-            <BulbOutlined className="!text-[#b0adbe] text-[13px]" />
-            <span className="!text-[#8b87a0] text-[12px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            <BulbOutlined className="!text-[#b0adbe] text-[15px]" />
+            <span className="!text-[#8b87a0] text-[13px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               Generated scenarios will appear here
             </span>
           </div>
         )}
       </div>
 
-      {/* ── scenario / test-case list ─────────────────────────────────── */}
-      <div className="scenario-table__list flex-1 overflow-y-auto px-4 py-3">
+      {/* ── list / grid area ──────────────────────────────────────────── */}
+      <div className="scenario-table__list flex-1 overflow-y-auto px-5 py-4">
         {!hasScenarios && !draftScenario ? (
           <div className="flex flex-col items-center justify-center h-full">
             <Empty
               description={
-                <span className="!text-[#8b87a0] text-[13px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                <span className="!text-[#8b87a0] text-[14px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                   Enter a user story in the chat to generate scenarios
                 </span>
               }
@@ -780,46 +869,100 @@ export function ScenarioTable({
             />
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {displayScenarios.map((sc, i) => (
-              <ScenarioCard
-                key={sc.id}
-                scenario={sc}
-                index={i}
-                isSelected={selectedIds.has(sc.id)}
-                onToggleSelect={() => toggleSelect(sc.id)}
-                showSteps={isTcView}
-                hideStepEdit={isScenarioView}
-                onUpdate={handleUpdateScenario}
-              />
-            ))}
-
-            {/* draft card */}
-            {draftScenario && (
-              <EditScenarioForm
-                scenario={draftScenario}
-                onSave={(saved) => {
-                  if (saved.title.trim()) {
-                    onAddScenario(saved);
-                    if (isTcView) setTcGeneratedIds((prev) => [...prev, saved.id]);
-                  }
-                  setDraftScenario(null);
-                }}
-                onCancel={() => setDraftScenario(null)}
-              />
+          <>
+            {/* ── mode identity banner ─── */}
+            {hasScenarios && (
+              <div
+                className={`flex items-center gap-2 mb-4 px-4 py-[9px] rounded-xl text-[13px] ${
+                  isScenarioView ? "bg-[#f3eaff] text-[#7c3aed]" : "bg-[#e8f4fd] text-[#2563eb]"
+                }`}
+              >
+                {isScenarioView ? (
+                  <BulbOutlined className="text-[15px]" />
+                ) : (
+                  <ExperimentOutlined className="text-[15px]" />
+                )}
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700 }}>
+                  {isScenarioView ? "Scenarios" : "Test Cases"}
+                </span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", opacity: 0.65 }}>
+                  {isScenarioView
+                    ? "— high-level test flows"
+                    : "— step-by-step execution, ready to save"}
+                </span>
+              </div>
             )}
-          </div>
+
+            {/* ── scenario grid view ─── */}
+            {isScenarioView && (
+              <div className="grid grid-cols-2 gap-4">
+                {displayScenarios.map((sc, i) => (
+                  <ScenarioGridCard
+                    key={sc.id}
+                    scenario={sc}
+                    index={i}
+                    isSelected={selectedIds.has(sc.id)}
+                    onToggleSelect={() => toggleSelect(sc.id)}
+                    onUpdate={handleUpdateScenario}
+                  />
+                ))}
+                {draftScenario && (
+                  <div className="col-span-2">
+                    <EditScenarioForm
+                      scenario={draftScenario}
+                      onSave={(saved) => {
+                        if (saved.title.trim()) {
+                          onAddScenario(saved);
+                        }
+                        setDraftScenario(null);
+                      }}
+                      onCancel={() => setDraftScenario(null)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── test case list view ─── */}
+            {isTcView && (
+              <div className="flex flex-col gap-3">
+                {displayScenarios.map((sc, i) => (
+                  <TestCaseListCard
+                    key={sc.id}
+                    scenario={sc}
+                    index={i}
+                    isSelected={selectedIds.has(sc.id)}
+                    onToggleSelect={() => toggleSelect(sc.id)}
+                    onUpdate={handleUpdateScenario}
+                  />
+                ))}
+                {draftScenario && (
+                  <EditScenarioForm
+                    scenario={draftScenario}
+                    onSave={(saved) => {
+                      if (saved.title.trim()) {
+                        onAddScenario(saved);
+                        setTcGeneratedIds((prev) => [...prev, saved.id]);
+                      }
+                      setDraftScenario(null);
+                    }}
+                    onCancel={() => setDraftScenario(null)}
+                  />
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 
       {/* ── floating bottom bar ────────────────────────────────────────── */}
       {hasScenarios && ((isScenarioView && selectedCount > 0) || isTcView) && (
         <div
-          className="flex items-center justify-between px-6 py-3 bg-white border-t border-[#f3f0fb]"
+          className="flex items-center justify-between px-6 py-4 bg-white border-t border-[#f3f0fb]"
           style={{ boxShadow: "0 -2px 10px 0 rgba(124, 58, 237, 0.05)" }}
         >
           <span
-            className="!text-[#8b87a0] text-[12px]"
+            className="!text-[#8b87a0] text-[13px]"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
           >
             {isTcView
@@ -828,28 +971,39 @@ export function ScenarioTable({
           </span>
 
           {isScenarioView ? (
-            /* Scenario view: primary CTA → generate / view test cases */
             <button
               onClick={handleGoToTcView}
-              className="flex items-center gap-[6px] px-4 py-[7px] rounded-lg border-0 bg-[#7c3aed] text-white text-[12px] cursor-pointer hover:bg-[#6d28d9] transition-colors"
+              className="flex items-center gap-2 px-5 py-[9px] rounded-xl border-0 bg-[#7c3aed] text-white text-[13px] cursor-pointer hover:bg-[#6d28d9] transition-colors"
               style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
             >
-              <ExperimentOutlined className="text-[12px]" />
+              <ExperimentOutlined className="text-[14px]" />
               {tcCtaLabel}
-              <ArrowRightOutlined className="text-[11px]" />
+              <ArrowRightOutlined className="text-[13px]" />
             </button>
           ) : (
-            /* Test cases view: primary CTA → save all to repository */
-            <button
-              onClick={() => onSave(displayScenarios.map((s) => s.id))}
-              disabled={isSaveDisabled}
-              className={`flex items-center gap-[6px] px-4 py-[7px] rounded-lg border-0 bg-[#7c3aed] text-white text-[12px] transition-colors ${isSaveDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-[#6d28d9]"}`}
-              style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
-            >
-              <SaveOutlined className="text-[12px]" />
-              Save &amp; Continue
-              <ArrowRightOutlined className="text-[11px]" />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Secondary: Save — stays on current view */}
+              <button
+                onClick={() => onSave(displayScenarios.map((s) => s.id))}
+                disabled={isSaveDisabled}
+                className={`flex items-center gap-2 px-5 py-[9px] rounded-xl border border-[#dbeafe] bg-white !text-[#2563eb] text-[13px] transition-colors ${isSaveDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-[#e8f4fd]"}`}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+              >
+                <SaveOutlined className="text-[14px]" />
+                Save
+              </button>
+              {/* Primary: Save & Continue — resets generator */}
+              <button
+                onClick={() => onSaveAndContinue(displayScenarios.map((s) => s.id))}
+                disabled={isSaveDisabled}
+                className={`flex items-center gap-2 px-5 py-[9px] rounded-xl border-0 bg-[#2563eb] text-white text-[13px] transition-colors ${isSaveDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-[#1d4ed8]"}`}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+              >
+                <SaveOutlined className="text-[14px]" />
+                Save &amp; Continue
+                <ArrowRightOutlined className="text-[13px]" />
+              </button>
+            </div>
           )}
         </div>
       )}

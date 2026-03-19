@@ -1,6 +1,6 @@
 import { Outlet, useParams, NavLink } from "react-router";
 import { DashboardOutlined, ExperimentOutlined, FolderOutlined, ReadOutlined, ToolOutlined, SettingOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { initProject } from "../../../store/projectConfigSlice";
 import { initRepo } from "../../../store/repoSlice";
@@ -25,12 +25,21 @@ export function ProjectLayout() {
     s.projects.list.find((p) => p.id === projectId)
   );
 
+  const [contentVisible, setContentVisible] = useState(true);
+
   // Lazily initialise Redux state for projects created after the store was hydrated.
   useEffect(() => {
     if (!projectId) return;
     dispatch(initProject(projectId));
     dispatch(initRepo(projectId));
   }, [projectId, dispatch]);
+
+  // Fade out → update → fade in when project switches
+  useEffect(() => {
+    setContentVisible(false);
+    const t = setTimeout(() => setContentVisible(true), 220);
+    return () => clearTimeout(t);
+  }, [projectId]);
 
   return (
     <div className="project-layout flex flex-1 min-h-0 h-full">
@@ -98,7 +107,18 @@ export function ProjectLayout() {
       {/* Main content */}
       <main className="project-layout__main flex-1 min-w-0 bg-[#faf9ff] overflow-hidden flex flex-col">
         <ErrorBoundary>
-          <Outlet context={{ project }} />
+          <div
+            style={{
+              opacity: contentVisible ? 1 : 0,
+              transition: "opacity 0.22s ease",
+              flex: 1,
+              minHeight: 0,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Outlet context={{ project }} />
+          </div>
         </ErrorBoundary>
       </main>
     </div>

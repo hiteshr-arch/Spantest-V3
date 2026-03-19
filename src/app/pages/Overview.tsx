@@ -61,10 +61,10 @@ export function Overview() {
 
   return (
     <div className="overview flex flex-col h-full overflow-auto bg-[#faf9ff]">
-      <div className="flex flex-col gap-5 p-6 max-w-[1200px] w-full mx-auto">
+      <div className="flex flex-col gap-5 p-4 sm:p-6 w-full">
         {/* ── Header ── */}
         <div
-          className="bg-white rounded-2xl px-6 py-5 flex items-start justify-between gap-4"
+          className="bg-white rounded-2xl px-4 sm:px-6 py-5 flex items-start justify-between gap-4 flex-wrap sm:flex-nowrap"
           style={{
             boxShadow:
               "0px 1px 4px 0px rgba(124,58,237,0.06), 0px 1px 2px 0px rgba(0,0,0,0.04)",
@@ -122,7 +122,7 @@ export function Overview() {
             )}
           </div>
 
-          <div className="shrink-0 text-right">
+          <div className="shrink-0 text-left sm:text-right w-full sm:w-auto">
             <p className="font-['DM_Sans',sans-serif] text-[#8b87a0] text-[11px]">
               Created
             </p>
@@ -139,7 +139,7 @@ export function Overview() {
         </div>
 
         {/* ── Stat Cards ── */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
             label="Scenarios"
             value={stats.totalScenarios ?? 0}
@@ -153,12 +153,6 @@ export function Overview() {
             borderColor="#2563eb"
           />
           <StatCard
-            label="Scripts"
-            value={stats.totalScripts ?? 0}
-            subtitle="Automation scripts"
-            borderColor="#16a34a"
-          />
-          <StatCard
             label="Team"
             value={config.members?.length ?? 0}
             subtitle="Members"
@@ -167,7 +161,7 @@ export function Overview() {
         </div>
 
         {/* ── Charts row ── */}
-        <div className="grid grid-cols-[1fr_340px] gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4">
           {/* Weekly Activity */}
           <div
             className="bg-white rounded-2xl p-5"
@@ -218,7 +212,6 @@ export function Overview() {
                 />
                 <Bar dataKey="scenarios" name="Scenarios" fill="#7c3aed" radius={[3, 3, 0, 0]} />
                 <Bar dataKey="testCases" name="Test Cases" fill="#2563eb" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="scripts" name="Scripts" fill="#16a34a" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             {/* Legend */}
@@ -226,7 +219,6 @@ export function Overview() {
               {[
                 { color: "#7c3aed", label: "Scenarios" },
                 { color: "#2563eb", label: "Test Cases" },
-                { color: "#16a34a", label: "Scripts" },
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-[5px]">
                   <span
@@ -410,7 +402,7 @@ export function Overview() {
         </div>
 
         {/* ── Bottom row: Team + Jira ── */}
-        <div className="grid grid-cols-2 gap-4 pb-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-2">
           {/* Team Members */}
           <div
             className="bg-white rounded-2xl p-5"

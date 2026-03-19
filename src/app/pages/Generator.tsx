@@ -40,6 +40,7 @@ export function Generator() {
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [savingIds, setSavingIds] = useState<string[]>([]);
   const [savingAsScript, setSavingAsScript] = useState(false);
+  const [shouldResetAfterSave, setShouldResetAfterSave] = useState(false);
   const [sourceStory, setSourceStory] = useState<string>("");
   const [initialScriptView, setInitialScriptView] = useState<{ scenarios: Scenario[]; framework?: string } | null>(null);
   const [isRestoredFromSave, setIsRestoredFromSave] = useState(false);
@@ -200,6 +201,14 @@ export function Generator() {
   }, [message]);
 
   const handleSave = useCallback((selectedIds: string[], asScript?: boolean) => {
+    setShouldResetAfterSave(false);
+    setSavingIds(selectedIds);
+    setSavingAsScript(!!asScript);
+    setSaveModalOpen(true);
+  }, []);
+
+  const handleSaveAndContinue = useCallback((selectedIds: string[], asScript?: boolean) => {
+    setShouldResetAfterSave(true);
     setSavingIds(selectedIds);
     setSavingAsScript(!!asScript);
     setSaveModalOpen(true);
@@ -263,26 +272,28 @@ export function Generator() {
       setSavingIds([]);
       setSavingAsScript(false);
 
-      // Reset generator so user can start a new story
-      setScenarios([]);
-      setViewMode("scenario");
-      setShowTestCases(false);
-      setActiveTestType(null);
-      setSourceStory("");
-      const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `msg-saved-${Date.now()}`,
-          role: "assistant" as const,
-          content: "Saved to repository. Write your next user story to continue.",
-          timestamp: now,
-          savedToRepo: true,
-          scenarios: scenariosToSave,
-        },
-      ]);
+      if (shouldResetAfterSave) {
+        // Reset generator so user can start a new story
+        setScenarios([]);
+        setViewMode("scenario");
+        setShowTestCases(false);
+        setActiveTestType(null);
+        setSourceStory("");
+        const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `msg-saved-${Date.now()}`,
+            role: "assistant" as const,
+            content: "Saved to repository. Write your next user story to continue.",
+            timestamp: now,
+            savedToRepo: true,
+            scenarios: scenariosToSave,
+          },
+        ]);
+      }
     },
-    [savingIds, savingAsScript, scenarios, message, dispatch, projectId, sourceStory]
+    [savingIds, savingAsScript, scenarios, message, dispatch, projectId, sourceStory, shouldResetAfterSave]
   );
 
   const handleCreateRepoFolder = useCallback(
@@ -358,6 +369,7 @@ export function Generator() {
           onViewModeChange={handleViewModeChange}
           onGenerateTC={handleGenerateTC}
           onSave={handleSave}
+          onSaveAndContinue={handleSaveAndContinue}
           isSaveDisabled={isRestoredFromSave}
           onDiscard={handleDiscard}
           activeTestType={activeTestType}
