@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Input, Select, App } from "antd";
 import {
   FolderAddOutlined,
@@ -43,6 +43,7 @@ interface SaveToRepoModalProps {
   savingCount: number;
   jiraStories?: JiraStory[];
   jiraEpics?: JiraEpic[];
+  preselectedStoryId?: string;
 }
 
 /* ─── component ──────────────────────────────────────────────────────── */
@@ -56,6 +57,7 @@ export function SaveToRepoModal({
   savingCount,
   jiraStories = [],
   jiraEpics = [],
+  preselectedStoryId,
 }: SaveToRepoModalProps) {
   const { message } = App.useApp();
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
@@ -66,7 +68,11 @@ export function SaveToRepoModal({
   });
   const [creatingIn, setCreatingIn] = useState<string | null | undefined>(undefined); // undefined = not creating
   const [newFolderName, setNewFolderName] = useState("");
-  const [linkedStoryId, setLinkedStoryId] = useState<string | undefined>(undefined);
+  const [linkedStoryId, setLinkedStoryId] = useState<string | undefined>(preselectedStoryId);
+
+  useEffect(() => {
+    if (open) setLinkedStoryId(preselectedStoryId);
+  }, [open, preselectedStoryId]);
 
   const tree = buildTree(folders);
 

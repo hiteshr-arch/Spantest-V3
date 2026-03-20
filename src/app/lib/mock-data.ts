@@ -445,6 +445,7 @@ export interface RepoItem {
   scriptFramework?: ScriptFramework;
   sourceStory?: string;
   linkedStoryId?: string;
+  chatMessages?: GeneratorMessage[];
 }
 
 export const mockRepoFolders: RepoFolder[] = [

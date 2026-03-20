@@ -260,9 +260,9 @@ function EditScenarioForm({
   );
 }
 
-/* ─── scenario grid card (scenario mode) ─────────────────────────────── */
+/* ─── scenario table row (scenario mode) ────────────────────────────── */
 
-function ScenarioGridCard({
+function ScenarioTableRow({
   scenario,
   index,
   isSelected,
@@ -285,102 +285,104 @@ function ScenarioGridCard({
 
   if (editing) {
     return (
-      <div className="col-span-1">
-        <EditScenarioForm
-          scenario={scenario}
-          hideStepEdit={true}
-          onSave={(updated) => {
-            onUpdate(updated);
-            setEditing(false);
-          }}
-          onCancel={() => setEditing(false)}
-        />
-      </div>
+      <EditScenarioForm
+        scenario={scenario}
+        hideStepEdit={true}
+        onSave={(updated) => {
+          onUpdate(updated);
+          setEditing(false);
+        }}
+        onCancel={() => setEditing(false)}
+      />
     );
   }
 
   return (
     <div
-      className={`relative flex flex-col gap-3 rounded-xl border p-4 cursor-pointer transition-all ${
-        isSelected
-          ? "border-[#7c3aed]/30 bg-[#faf5ff]"
-          : "border-[#f3f0fb] bg-white hover:border-[#d4c5f9] hover:shadow-sm"
+      className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-all border-b border-[#f3f0fb] last:border-b-0 ${
+        isSelected ? "bg-[#faf5ff]" : "bg-white hover:bg-[#faf9ff]"
       }`}
       style={{ borderLeft: `3px solid ${isSelected ? "#7c3aed" : "#c4b5fd"}` }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={onToggleSelect}
     >
-      {/* top row: checkbox + ID + type + edit */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={isSelected}
-            onChange={onToggleSelect}
-            onClick={(e) => e.stopPropagation()}
-          />
-          <span
-            className="!text-[#7c3aed] text-[12px] bg-[#f3eaff] rounded-md px-[8px] py-[3px] shrink-0"
-            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700 }}
-          >
-            {scenario.scenarioId}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <Tag
-            className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px] !uppercase"
-            color={isApi ? "geekblue" : "cyan"}
-            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
-          >
-            {isApi ? "API" : "UI"}
-          </Tag>
-          {hovered && (
-            <Tooltip title="Edit">
-              <button
-                onClick={(e) => { e.stopPropagation(); setEditing(true); }}
-                className="flex items-center justify-center w-[28px] h-[28px] rounded-md bg-transparent border-0 !text-[#8b87a0] hover:!text-[#7c3aed] hover:bg-[#f3eaff] cursor-pointer text-[14px] transition-colors"
-              >
-                <EditOutlined />
-              </button>
-            </Tooltip>
-          )}
-        </div>
-      </div>
+      {/* checkbox */}
+      <Checkbox
+        checked={isSelected}
+        onChange={onToggleSelect}
+        onClick={(e) => e.stopPropagation()}
+        className="shrink-0"
+      />
+
+      {/* index */}
+      <span
+        className="shrink-0 w-[28px] text-center !text-[#b0adbe] text-[12px]"
+        style={{ fontFamily: "'DM Sans', sans-serif" }}
+      >
+        {index + 1}
+      </span>
+
+      {/* scenario ID */}
+      <span
+        className="shrink-0 !text-[#7c3aed] text-[12px] bg-[#f3eaff] rounded-md px-[8px] py-[2px]"
+        style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700 }}
+      >
+        {scenario.scenarioId}
+      </span>
+
+      {/* type tag */}
+      <Tag
+        className="!text-[11px] !px-[7px] !py-0 !m-0 !leading-[20px] !uppercase shrink-0"
+        color={isApi ? "geekblue" : "cyan"}
+        style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+      >
+        {isApi ? "API" : "UI"}
+      </Tag>
 
       {/* title */}
-      <p
-        className="!text-[#0f0a1e] text-[13.5px] flex-1"
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 500,
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-          lineHeight: "1.5",
-        }}
+      <span
+        className="flex-1 min-w-0 truncate !text-[#0f0a1e] text-[13px]"
+        style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
       >
         {scenario.title}
-      </p>
+      </span>
 
-      {/* bottom row: priority + category + steps */}
-      <div className="flex items-center gap-[6px] flex-wrap">
-        <Tag
-          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
-          style={{ background: pColor.bg, color: pColor.text, borderColor: pColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
-        >
-          {scenario.priority}
-        </Tag>
-        <Tag
-          className="!text-[12px] !px-[8px] !py-0 !m-0 !leading-[22px]"
-          style={{ background: cColor.bg, color: cColor.text, borderColor: cColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
-        >
-          {scenario.category}
-        </Tag>
-        {stepsCount > 0 && (
-          <span className="ml-auto !text-[#b0adbe] text-[12px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-            {stepsCount} step{stepsCount !== 1 ? "s" : ""}
-          </span>
+      {/* priority */}
+      <Tag
+        className="!text-[11px] !px-[7px] !py-0 !m-0 !leading-[20px] shrink-0"
+        style={{ background: pColor.bg, color: pColor.text, borderColor: pColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+      >
+        {scenario.priority}
+      </Tag>
+
+      {/* category */}
+      <Tag
+        className="!text-[11px] !px-[8px] !py-0 !m-0 !leading-[20px] shrink-0"
+        style={{ background: cColor.bg, color: cColor.text, borderColor: cColor.border, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}
+      >
+        {scenario.category}
+      </Tag>
+
+      {/* steps count */}
+      <span
+        className="shrink-0 w-[52px] text-right !text-[#b0adbe] text-[12px]"
+        style={{ fontFamily: "'DM Sans', sans-serif" }}
+      >
+        {stepsCount > 0 ? `${stepsCount} step${stepsCount !== 1 ? "s" : ""}` : "—"}
+      </span>
+
+      {/* edit action */}
+      <div className="shrink-0 w-[32px] flex items-center justify-center">
+        {hovered && (
+          <Tooltip title="Edit">
+            <button
+              onClick={(e) => { e.stopPropagation(); setEditing(true); }}
+              className="flex items-center justify-center w-[28px] h-[28px] rounded-md bg-transparent border-0 !text-[#8b87a0] hover:!text-[#7c3aed] hover:bg-[#f3eaff] cursor-pointer text-[14px] transition-colors"
+            >
+              <EditOutlined />
+            </button>
+          </Tooltip>
         )}
       </div>
     </div>
@@ -749,11 +751,14 @@ export function ScenarioTable({
 
         {hasScenarios && (
           <>
-            <Checkbox
-              checked={selectedIds.size === displayScenarios.length && displayScenarios.length > 0}
-              indeterminate={selectedIds.size > 0 && selectedIds.size < displayScenarios.length}
-              onChange={toggleSelectAll}
-            />
+            {/* checkbox only needed in TC view; scenario view has it in table header */}
+            {isTcView && (
+              <Checkbox
+                checked={selectedIds.size === displayScenarios.length && displayScenarios.length > 0}
+                indeterminate={selectedIds.size > 0 && selectedIds.size < displayScenarios.length}
+                onChange={toggleSelectAll}
+              />
+            )}
 
             {selectedCount > 0 ? (
               <span
@@ -893,11 +898,39 @@ export function ScenarioTable({
               </div>
             )}
 
-            {/* ── scenario grid view ─── */}
+            {/* ── scenario table view ─── */}
             {isScenarioView && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col rounded-xl overflow-hidden border border-[#f3f0fb]">
+                {/* table header */}
+                <div
+                  className="flex items-center gap-3 px-4 py-[9px] bg-[#faf9ff] border-b border-[#f3f0fb]"
+                  style={{ borderLeft: "3px solid transparent" }}
+                >
+                  <Checkbox
+                    checked={selectedIds.size === displayScenarios.length && displayScenarios.length > 0}
+                    indeterminate={selectedIds.size > 0 && selectedIds.size < displayScenarios.length}
+                    onChange={() => {
+                      if (selectedIds.size === displayScenarios.length) {
+                        setSelectedIds(new Set());
+                      } else {
+                        setSelectedIds(new Set(displayScenarios.map((s) => s.id)));
+                      }
+                    }}
+                    className="shrink-0"
+                  />
+                  <span className="shrink-0 w-[28px]" />
+                  <span className="shrink-0 w-[60px] !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>ID</span>
+                  <span className="shrink-0 w-[46px] !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>Type</span>
+                  <span className="flex-1 min-w-0 !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>Title</span>
+                  <span className="shrink-0 w-[64px] !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>Priority</span>
+                  <span className="shrink-0 w-[80px] !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>Category</span>
+                  <span className="shrink-0 w-[52px] text-right !text-[#8b87a0] text-[11px] uppercase tracking-wide" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>Steps</span>
+                  <span className="shrink-0 w-[32px]" />
+                </div>
+
+                {/* rows */}
                 {displayScenarios.map((sc, i) => (
-                  <ScenarioGridCard
+                  <ScenarioTableRow
                     key={sc.id}
                     scenario={sc}
                     index={i}
@@ -906,8 +939,10 @@ export function ScenarioTable({
                     onUpdate={handleUpdateScenario}
                   />
                 ))}
+
+                {/* draft form */}
                 {draftScenario && (
-                  <div className="col-span-2">
+                  <div className="p-4">
                     <EditScenarioForm
                       scenario={draftScenario}
                       onSave={(saved) => {

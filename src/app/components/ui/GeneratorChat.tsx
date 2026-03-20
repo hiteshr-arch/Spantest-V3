@@ -9,7 +9,7 @@ import {
   DownOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import type { GeneratorMessage, Scenario, TestType, GenerateMode } from "../../lib/mock-data";
+import type { GeneratorMessage, Scenario, TestType, GenerateMode, JiraStory } from "../../lib/mock-data";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
 type ScenarioType = "all" | "positive" | "negative" | "edge-case";
@@ -28,6 +28,8 @@ interface GeneratorChatProps {
   viewMode: "scenario" | "testcase";
   onBackToScenarios: () => void;
   onRestoreScenarios: (scenarios: Scenario[], fromSave?: boolean) => void;
+  stories?: JiraStory[];
+  onStorySelect?: (storyId: string | undefined) => void;
 }
 
 interface AttachedFile {
@@ -35,18 +37,35 @@ interface AttachedFile {
   size: string;
 }
 
-export function GeneratorChat({ messages, onSend, isGenerating, viewMode, onBackToScenarios, onRestoreScenarios }: GeneratorChatProps) {
+export function GeneratorChat({ messages, onSend, isGenerating, viewMode, onBackToScenarios, onRestoreScenarios, stories = [], onStorySelect }: GeneratorChatProps) {
   const [input, setInput] = useState("");
   const [testType, setTestType] = useState<TestType>("ui");
   const [mode, setMode] = useState<GenerateMode>("scenario-only");
   const [scenarioType, setScenarioType] = useState<ScenarioType>("all");
   const [attachments, setAttachments] = useState<AttachedFile[]>([]);
+  const [selectedStory, setSelectedStory] = useState<JiraStory | null>(null);
+  const [storyDropdownOpen, setStoryDropdownOpen] = useState(false);
+  const [storySearch, setStorySearch] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleSelectStory = (story: JiraStory) => {
+    setSelectedStory(story);
+    setInput(story.summary);
+    setStoryDropdownOpen(false);
+    setStorySearch("");
+    onStorySelect?.(story.id);
+  };
+
+  const handleClearStory = () => {
+    setSelectedStory(null);
+    setInput("");
+    onStorySelect?.(undefined);
+  };
 
   const handleSend = () => {
     if (!input.trim() || isGenerating) return;
@@ -241,6 +260,20 @@ export function GeneratorChat({ messages, onSend, isGenerating, viewMode, onBack
           </div>
         )}
 
+        {/* Selected story chip */}
+        {selectedStory && (
+          <div className="flex items-center gap-[6px] bg-[#f3eaff] rounded-lg px-[10px] py-[5px] self-start">
+            <span className="font-['DM_Sans',sans-serif] text-[11px] text-[#7c3aed] font-semibold">{selectedStory.key}</span>
+            <span className="font-['DM_Sans',sans-serif] text-[11px] text-[#4c4568] max-w-[180px] truncate">{selectedStory.summary}</span>
+            <button
+              onClick={handleClearStory}
+              className="border-0 bg-transparent cursor-pointer text-[#8b87a0] hover:text-[#7c3aed] text-[12px] p-0 flex items-center leading-none"
+            >
+              &times;
+            </button>
+          </div>
+        )}
+
         {/* Options row */}
         <div className="flex items-center gap-[8px] flex-wrap">
           {/* UI / API toggle */}
@@ -301,6 +334,76 @@ export function GeneratorChat({ messages, onSend, isGenerating, viewMode, onBack
               <DownOutlined style={{ fontSize: 8, opacity: 0.5 }} />
             </button>
           </Dropdown>
+
+          {/* Use Story button */}
+          {stories.length > 0 && (
+            <Dropdown
+              open={storyDropdownOpen}
+              onOpenChange={setStoryDropdownOpen}
+              trigger={["click"]}
+              dropdownRender={() => (
+                <div
+                  className="bg-white rounded-xl shadow-lg border border-[#f3f0fb] py-2"
+                  style={{ width: 280, maxHeight: 260, display: "flex", flexDirection: "column" }}
+                >
+                  <div className="px-3 pb-2">
+                    <input
+                      autoFocus
+                      placeholder="Search stories..."
+                      value={storySearch}
+                      onChange={(e) => setStorySearch(e.target.value)}
+                      className="w-full rounded-lg border border-[#f3f0fb] bg-[#faf9ff] px-3 py-[6px] text-[12px] outline-none font-['DM_Sans',sans-serif] text-[#4c4568] placeholder:text-[#b0adbe]"
+                    />
+                  </div>
+                  <div className="overflow-y-auto flex-1">
+                    {stories
+                      .filter((s) =>
+                        storySearch.trim() === "" ||
+                        s.summary.toLowerCase().includes(storySearch.toLowerCase()) ||
+                        s.key.toLowerCase().includes(storySearch.toLowerCase())
+                      )
+                      .map((story) => (
+                        <button
+                          key={story.id}
+                          onClick={() => handleSelectStory(story)}
+                          className="w-full text-left px-3 py-[8px] border-0 bg-transparent cursor-pointer hover:bg-[#faf5ff] transition-colors flex flex-col gap-[2px]"
+                        >
+                          <span
+                            className="text-[11px] font-['DM_Sans',sans-serif] text-[#7c3aed]"
+                            style={{ fontWeight: 700 }}
+                          >
+                            {story.key}
+                          </span>
+                          <span
+                            className="text-[12px] font-['DM_Sans',sans-serif] text-[#4c4568] line-clamp-2"
+                            style={{ fontWeight: 400 }}
+                          >
+                            {story.summary}
+                          </span>
+                        </button>
+                      ))}
+                    {stories.filter((s) =>
+                      storySearch.trim() === "" ||
+                      s.summary.toLowerCase().includes(storySearch.toLowerCase()) ||
+                      s.key.toLowerCase().includes(storySearch.toLowerCase())
+                    ).length === 0 && (
+                      <p className="text-center text-[12px] text-[#b0adbe] py-4 font-['DM_Sans',sans-serif]">
+                        No stories found
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            >
+              <button
+                className="flex items-center gap-[4px] rounded-lg bg-[#f3eaff] border-0 px-[10px] py-[5px] cursor-pointer text-[11px] font-['DM_Sans',sans-serif] text-[#7c3aed] hover:bg-[#ede5fb] transition-colors whitespace-nowrap"
+                style={{ fontWeight: 600 }}
+              >
+                Use Story
+                <DownOutlined style={{ fontSize: 8, opacity: 0.5 }} />
+              </button>
+            </Dropdown>
+          )}
         </div>
 
         {/* Text input */}

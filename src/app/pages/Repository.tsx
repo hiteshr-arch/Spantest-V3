@@ -219,6 +219,7 @@ export function Repository() {
           openScriptView: allScripts,
           scriptFramework: firstItem.scriptFramework,
           sourceStory: firstItem.sourceStory,
+          chatMessages: firstItem.chatMessages,
         },
       });
     },

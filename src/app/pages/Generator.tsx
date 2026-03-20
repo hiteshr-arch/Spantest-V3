@@ -44,6 +44,7 @@ export function Generator() {
   const [sourceStory, setSourceStory] = useState<string>("");
   const [initialScriptView, setInitialScriptView] = useState<{ scenarios: Scenario[]; framework?: string } | null>(null);
   const [isRestoredFromSave, setIsRestoredFromSave] = useState(false);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | undefined>(undefined);
 
   // Restore state from repo edit navigation
   useEffect(() => {
@@ -56,6 +57,7 @@ export function Generator() {
       openScriptView?: boolean;
       scriptFramework?: string;
       sourceStory?: string;
+      chatMessages?: GeneratorMessage[];
     } | null;
 
     if (state?.scenarios && state.scenarios.length > 0) {
@@ -65,24 +67,28 @@ export function Generator() {
       const hasTC = state.showTestCases !== false;
       const story = state.sourceStory ?? sc[0].title;
 
-      const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      setMessages([
-        {
-          id: `msg-repo-${Date.now()}`,
-          role: "user",
-          content: story,
-          testType,
-          mode,
-          timestamp: now,
-        },
-        {
-          id: `msg-repo-${Date.now() + 1}`,
-          role: "assistant",
-          content: `Loaded ${sc.length} scenario(s) from repository${hasTC ? " with test cases" : ""}.`,
-          scenarios: sc,
-          timestamp: now,
-        },
-      ]);
+      if (state.chatMessages && state.chatMessages.length > 0) {
+        setMessages(state.chatMessages);
+      } else {
+        const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        setMessages([
+          {
+            id: `msg-repo-${Date.now()}`,
+            role: "user",
+            content: story,
+            testType,
+            mode,
+            timestamp: now,
+          },
+          {
+            id: `msg-repo-${Date.now() + 1}`,
+            role: "assistant",
+            content: `Loaded ${sc.length} scenario(s) from repository${hasTC ? " with test cases" : ""}.`,
+            scenarios: sc,
+            timestamp: now,
+          },
+        ]);
+      }
       setScenarios(sc);
       setShowTestCases(hasTC);
       setActiveTestType(testType);
@@ -119,6 +125,8 @@ export function Generator() {
       setMessages((prev) => [...prev, userMsg]);
       setIsGenerating(true);
       setShowTestCases(mode === "scenario-testcase");
+      setViewMode("scenario");
+      setIsRestoredFromSave(false);
 
       const generationTimer = setTimeout(() => {
         const sourceScenarios = testType === "api" ? mockApiScenarios : mockGeneratedScenarios;
@@ -243,6 +251,7 @@ export function Generator() {
           scriptFramework: "python",
           sourceStory,
           linkedStoryId,
+          chatMessages: messages,
         };
         dispatch(addItem({ projectId, item: repoItem }));
         message.success(`Saved script (${scenariosToSave.length} test cases) to repository`);
@@ -263,6 +272,7 @@ export function Generator() {
             scenario: sc,
             sourceStory,
             linkedStoryId,
+            chatMessages: messages,
           };
           dispatch(addItem({ projectId, item: repoItem }));
         });
@@ -359,6 +369,8 @@ export function Generator() {
           viewMode={viewMode}
           onBackToScenarios={handleBackToScenarios}
           onRestoreScenarios={handleRestoreScenarios}
+          stories={jiraStories}
+          onStorySelect={setSelectedStoryId}
         />
       </div>
       <div className="generator__results-panel flex-1 min-w-0 bg-[#faf9ff]">
@@ -389,6 +401,7 @@ export function Generator() {
         savingCount={savingIds.length}
         jiraStories={jiraStories}
         jiraEpics={jiraEpics}
+        preselectedStoryId={selectedStoryId}
       />
     </div>
   );
