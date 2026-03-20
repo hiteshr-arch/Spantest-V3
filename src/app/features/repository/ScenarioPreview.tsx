@@ -25,7 +25,14 @@ export function ScenarioPreview({ scenario }: { scenario: Scenario }) {
         >
           <thead>
             <tr>
-              {["#", "Method", "Endpoint", "Status", "Payload", "Expected Response"].map((h) => (
+              {[
+                "#",
+                "Method",
+                "Endpoint",
+                "Status",
+                "Payload",
+                "Expected Response",
+              ].map((h) => (
                 <th
                   key={h}
                   className="text-left px-2 py-[6px] !text-[#8b87a0] bg-[#faf9ff] border-b border-[#f3f0fb] whitespace-nowrap"
@@ -39,7 +46,9 @@ export function ScenarioPreview({ scenario }: { scenario: Scenario }) {
           <tbody>
             {scenario.apiSteps.map((s, i) => (
               <tr key={s.id} className="hover:bg-[#faf5ff] transition-colors">
-                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#b0adbe]">{i + 1}</td>
+                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#b0adbe]">
+                  {i + 1}
+                </td>
                 <td className="px-2 py-[5px] border-b border-[#f3f0fb]">
                   <Tag
                     className="!text-[10px] !px-[6px] !py-0 !m-0 !leading-[18px]"
@@ -47,19 +56,27 @@ export function ScenarioPreview({ scenario }: { scenario: Scenario }) {
                       s.method === "GET"
                         ? "blue"
                         : s.method === "POST"
-                        ? "green"
-                        : s.method === "DELETE"
-                        ? "red"
-                        : "orange"
+                          ? "green"
+                          : s.method === "DELETE"
+                            ? "red"
+                            : "orange"
                     }
                   >
                     {s.method}
                   </Tag>
                 </td>
-                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px]">{s.endpoint}</td>
-                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.outputStatusCode}</td>
-                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] max-w-[180px] truncate font-mono text-[10px]">{s.payload}</td>
-                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] max-w-[180px] truncate font-mono text-[10px]">{s.expectedResponse}</td>
+                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] font-mono text-[10px]">
+                  {s.endpoint}
+                </td>
+                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">
+                  {s.outputStatusCode}
+                </td>
+                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] max-w-[180px] truncate font-mono text-[10px]">
+                  {s.payload}
+                </td>
+                <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568] max-w-[180px] truncate font-mono text-[10px]">
+                  {s.expectedResponse}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -75,25 +92,37 @@ export function ScenarioPreview({ scenario }: { scenario: Scenario }) {
     >
       <thead>
         <tr>
-          {["#", "Precondition", "Step", "Test Data", "Expected Result"].map((h) => (
-            <th
-              key={h}
-              className="text-left px-2 py-[6px] !text-[#8b87a0] bg-[#faf9ff] border-b border-[#f3f0fb] whitespace-nowrap"
-              style={{ fontWeight: 600 }}
-            >
-              {h}
-            </th>
-          ))}
+          {["#", "Precondition", "Step", "Test Data", "Expected Result"].map(
+            (h) => (
+              <th
+                key={h}
+                className="text-left px-2 py-[6px] !text-[#8b87a0] bg-[#faf9ff] border-b border-[#f3f0fb] whitespace-nowrap"
+                style={{ fontWeight: 600 }}
+              >
+                {h}
+              </th>
+            ),
+          )}
         </tr>
       </thead>
       <tbody>
         {scenario.steps.map((s, i) => (
           <tr key={s.id} className="hover:bg-[#faf5ff] transition-colors">
-            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#b0adbe]">{i + 1}</td>
-            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.precondition}</td>
-            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.step}</td>
-            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.testData}</td>
-            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">{s.expectedResult}</td>
+            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#b0adbe]">
+              {i + 1}
+            </td>
+            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">
+              {s.precondition}
+            </td>
+            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">
+              {s.step}
+            </td>
+            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">
+              {s.testData}
+            </td>
+            <td className="px-2 py-[5px] border-b border-[#f3f0fb] !text-[#4c4568]">
+              {s.expectedResult}
+            </td>
           </tr>
         ))}
       </tbody>

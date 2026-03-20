@@ -11,7 +11,9 @@ function getPath(folderId: string, folders: RepoFolder[]): string {
   let current = folders.find((f) => f.id === folderId);
   while (current) {
     parts.unshift(current.name);
-    current = current.parentId ? folders.find((f) => f.id === current!.parentId) : undefined;
+    current = current.parentId
+      ? folders.find((f) => f.id === current!.parentId)
+      : undefined;
   }
   return parts.join(" / ");
 }
@@ -25,7 +27,12 @@ interface MoveItemModalProps {
   onMove: (itemId: string, targetFolderId: string) => void;
 }
 
-export function MoveItemModal({ item, folders, onClose, onMove }: MoveItemModalProps) {
+export function MoveItemModal({
+  item,
+  folders,
+  onClose,
+  onMove,
+}: MoveItemModalProps) {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
 
   const handleOk = () => {
@@ -40,14 +47,22 @@ export function MoveItemModal({ item, folders, onClose, onMove }: MoveItemModalP
     <Modal
       title="Move to Folder"
       open={!!item}
-      onCancel={() => { setTargetFolderId(null); onClose(); }}
+      onCancel={() => {
+        setTargetFolderId(null);
+        onClose();
+      }}
       onOk={handleOk}
       okText="Move"
-      okButtonProps={{ disabled: !targetFolderId || targetFolderId === item?.folderId }}
+      okButtonProps={{
+        disabled: !targetFolderId || targetFolderId === item?.folderId,
+      }}
     >
       {item && (
         <div>
-          <p className="!text-[#4c4568] text-[12px] mb-3" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          <p
+            className="!text-[#4c4568] text-[12px] mb-3"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          >
             Move <span style={{ fontWeight: 600 }}>{item.name}</span> to:
           </p>
           <Select
@@ -57,7 +72,11 @@ export function MoveItemModal({ item, folders, onClose, onMove }: MoveItemModalP
             placeholder="Select destination folder"
           >
             {folders.map((f) => (
-              <Select.Option key={f.id} value={f.id} disabled={f.id === item.folderId}>
+              <Select.Option
+                key={f.id}
+                value={f.id}
+                disabled={f.id === item.folderId}
+              >
                 <span className="flex items-center gap-1">
                   <FolderOutlined className="text-[11px]" />
                   {getPath(f.id, folders)}
@@ -110,13 +129,20 @@ export function BulkMoveModal({
     <Modal
       title="Move to Folder"
       open={open}
-      onCancel={() => { setTargetFolderId(null); onClose(); }}
+      onCancel={() => {
+        setTargetFolderId(null);
+        onClose();
+      }}
       onOk={handleOk}
       okText="Move"
       okButtonProps={{ disabled: !targetFolderId }}
     >
-      <p className="!text-[#4c4568] text-[12px] mb-3" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        Move <span style={{ fontWeight: 600 }}>{selectedCount} item(s)</span> to:
+      <p
+        className="!text-[#4c4568] text-[12px] mb-3"
+        style={{ fontFamily: "'DM Sans', sans-serif" }}
+      >
+        Move <span style={{ fontWeight: 600 }}>{selectedCount} item(s)</span>{" "}
+        to:
       </p>
       <div
         className="border border-[#f3f0fb] rounded-lg overflow-y-auto bg-white p-2"
@@ -134,7 +160,10 @@ export function BulkMoveModal({
         {folders.length === 0 && (
           <div className="text-center py-6">
             <FolderOutlined className="!text-[#d9d5e8] text-[20px]" />
-            <p className="!text-[#8b87a0] text-[11px] mt-2 m-0" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            <p
+              className="!text-[#8b87a0] text-[11px] mt-2 m-0"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
               No folders yet. Create one from the sidebar.
             </p>
           </div>

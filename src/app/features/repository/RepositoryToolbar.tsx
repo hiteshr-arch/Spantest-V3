@@ -1,6 +1,11 @@
 import React from "react";
 import { Input, Select } from "antd";
-import { SearchOutlined, RightOutlined, FolderOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  RightOutlined,
+  FolderOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import type { RepoFolder } from "../../lib/mock-data";
 
 interface RepositoryToolbarProps {
@@ -46,7 +51,12 @@ export function RepositoryToolbar({
   onBulkMove,
   onBulkDelete,
 }: RepositoryToolbarProps) {
-  const activeFilterCount = [filterType, filterTestType, filterPriority, filterCategory].filter(Boolean).length;
+  const activeFilterCount = [
+    filterType,
+    filterTestType,
+    filterPriority,
+    filterCategory,
+  ].filter(Boolean).length;
 
   return (
     <>
@@ -90,7 +100,12 @@ export function RepositoryToolbar({
           onChange={(e) => onSearchChange(e.target.value)}
           allowClear
           className="repository__search"
-          style={{ width: 200, height: 34, fontSize: 12, fontFamily: "'DM Sans', sans-serif" }}
+          style={{
+            width: 200,
+            height: 34,
+            fontSize: 12,
+            fontFamily: "'DM Sans', sans-serif",
+          }}
         />
 
         {/* filters */}
@@ -155,7 +170,10 @@ export function RepositoryToolbar({
 
       {/* summary bar */}
       <div className="flex items-center gap-4 px-6 py-2 bg-[#faf9ff]">
-        <span className="!text-[#8b87a0] text-[11.5px]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        <span
+          className="!text-[#8b87a0] text-[11.5px]"
+          style={{ fontFamily: "'DM Sans', sans-serif" }}
+        >
           Showing{" "}
           <span className="!text-[#0f0a1e]" style={{ fontWeight: 600 }}>
             {filteredCount}
@@ -163,7 +181,8 @@ export function RepositoryToolbar({
           item{filteredCount !== 1 ? "s" : ""}
           {selectedFolderId && (
             <>
-              {" "}in{" "}
+              {" "}
+              in{" "}
               <span className="!text-[#7c3aed]" style={{ fontWeight: 600 }}>
                 {folders.find((f) => f.id === selectedFolderId)?.name}
               </span>

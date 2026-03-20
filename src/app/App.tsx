@@ -1,6 +1,6 @@
 import { ConfigProvider, App as AntApp } from "antd";
 import { RouterProvider } from "react-router";
-import { router } from './routes';
+import { router } from "./routes";
 
 const antdTheme = {
   token: {

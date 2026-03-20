@@ -29,11 +29,9 @@ export function Overview() {
   const { project } = useOutletContext<{ project: Project }>();
 
   const config = useAppSelector(
-    (s) => s.projectConfig.configs[projectId ?? ""]
+    (s) => s.projectConfig.configs[projectId ?? ""],
   );
-  const jira = useAppSelector(
-    (s) => s.projectConfig.jira[projectId ?? ""]
-  );
+  const jira = useAppSelector((s) => s.projectConfig.jira[projectId ?? ""]);
 
   if (!config) {
     return (
@@ -53,9 +51,7 @@ export function Overview() {
     { name: "Edge Case", value: stats.scenariosByCategory?.edgeCase ?? 0 },
   ];
 
-  const recentActivity = [...(config.activityLog ?? [])]
-    .reverse()
-    .slice(0, 5);
+  const recentActivity = [...(config.activityLog ?? [])].reverse().slice(0, 5);
 
   const isJiraConnected = jira?.connected ?? config.jiraConnected ?? false;
 
@@ -86,8 +82,7 @@ export function Overview() {
                     config.status === "active"
                       ? "rgba(22,163,74,0.08)"
                       : "rgba(139,135,160,0.08)",
-                  color:
-                    config.status === "active" ? "#16a34a" : "#8b87a0",
+                  color: config.status === "active" ? "#16a34a" : "#8b87a0",
                 }}
               >
                 <span
@@ -210,8 +205,18 @@ export function Overview() {
                     border: "1px solid #f3f0fb",
                   }}
                 />
-                <Bar dataKey="scenarios" name="Scenarios" fill="#7c3aed" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="testCases" name="Test Cases" fill="#2563eb" radius={[3, 3, 0, 0]} />
+                <Bar
+                  dataKey="scenarios"
+                  name="Scenarios"
+                  fill="#7c3aed"
+                  radius={[3, 3, 0, 0]}
+                />
+                <Bar
+                  dataKey="testCases"
+                  name="Test Cases"
+                  fill="#2563eb"
+                  radius={[3, 3, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
             {/* Legend */}
@@ -253,12 +258,10 @@ export function Overview() {
                 {categoryData.map((cat) => {
                   const catTotal = categoryData.reduce(
                     (s, c) => s + c.value,
-                    0
+                    0,
                   );
                   const pct =
-                    catTotal > 0
-                      ? Math.round((cat.value / catTotal) * 100)
-                      : 0;
+                    catTotal > 0 ? Math.round((cat.value / catTotal) * 100) : 0;
                   return (
                     <div key={cat.name} className="flex flex-col gap-[4px]">
                       <div className="flex justify-between items-center">
@@ -307,8 +310,16 @@ export function Overview() {
               </p>
               <div className="flex flex-col gap-3">
                 {[
-                  { label: "UI", value: stats.testsByType?.ui ?? 0, color: "#7c3aed" },
-                  { label: "API", value: stats.testsByType?.api ?? 0, color: "#2563eb" },
+                  {
+                    label: "UI",
+                    value: stats.testsByType?.ui ?? 0,
+                    color: "#7c3aed",
+                  },
+                  {
+                    label: "API",
+                    value: stats.testsByType?.api ?? 0,
+                    color: "#2563eb",
+                  },
                 ].map((t) => {
                   const pct =
                     totalTests > 0
@@ -370,7 +381,10 @@ export function Overview() {
                   className={`flex items-start gap-3 py-3 ${idx < recentActivity.length - 1 ? "border-b border-[#f3f0fb]" : ""}`}
                 >
                   <div className="size-[28px] rounded-full bg-[#f3eaff] flex items-center justify-center shrink-0 mt-[1px]">
-                    <span className="text-[#7c3aed] text-[11px]" style={{ fontWeight: 700 }}>
+                    <span
+                      className="text-[#7c3aed] text-[11px]"
+                      style={{ fontWeight: 700 }}
+                    >
                       {entry.user?.[0]?.toUpperCase() ?? "?"}
                     </span>
                   </div>
@@ -417,7 +431,7 @@ export function Overview() {
             >
               Team Members
             </p>
-            {(!config.members || config.members.length === 0) ? (
+            {!config.members || config.members.length === 0 ? (
               <p className="font-['DM_Sans',sans-serif] text-[#8b87a0] text-[12px]">
                 No members yet.
               </p>
@@ -430,7 +444,11 @@ export function Overview() {
                   >
                     <div
                       className="size-[32px] rounded-full flex items-center justify-center shrink-0 text-white text-[11px]"
-                      style={{ backgroundColor: "#7c3aed", fontWeight: 700, fontFamily: "'DM Sans', sans-serif" }}
+                      style={{
+                        backgroundColor: "#7c3aed",
+                        fontWeight: 700,
+                        fontFamily: "'DM Sans', sans-serif",
+                      }}
                     >
                       {member.initials}
                     </div>
@@ -504,7 +522,10 @@ export function Overview() {
                 <div className="flex flex-col gap-[10px]">
                   {config.jiraInstanceUrl && (
                     <div className="flex flex-col gap-[2px]">
-                      <p className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]" style={{ fontWeight: 600 }}>
+                      <p
+                        className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]"
+                        style={{ fontWeight: 600 }}
+                      >
                         Instance
                       </p>
                       <p className="font-['DM_Sans',sans-serif] text-[13px] text-[#4c4568] break-all">
@@ -514,10 +535,16 @@ export function Overview() {
                   )}
                   {config.jiraProjectKey && (
                     <div className="flex flex-col gap-[2px]">
-                      <p className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]" style={{ fontWeight: 600 }}>
+                      <p
+                        className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]"
+                        style={{ fontWeight: 600 }}
+                      >
                         Project Key
                       </p>
-                      <span className="inline-flex self-start px-[8px] py-[2px] rounded bg-[#f3eaff] text-[#7c3aed] font-['DM_Sans',sans-serif] text-[12px]" style={{ fontWeight: 600 }}>
+                      <span
+                        className="inline-flex self-start px-[8px] py-[2px] rounded bg-[#f3eaff] text-[#7c3aed] font-['DM_Sans',sans-serif] text-[12px]"
+                        style={{ fontWeight: 600 }}
+                      >
                         {config.jiraProjectKey}
                       </span>
                     </div>
@@ -525,13 +552,33 @@ export function Overview() {
                   {jira?.epics && jira.epics.length > 0 && (
                     <div className="flex gap-4">
                       <div className="flex flex-col gap-[2px]">
-                        <p className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]" style={{ fontWeight: 600 }}>Epics</p>
-                        <p className="font-['Bricolage_Grotesque',sans-serif] text-[#0f0a1e] text-[20px]" style={{ fontWeight: 700 }}>{jira.epics.length}</p>
+                        <p
+                          className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]"
+                          style={{ fontWeight: 600 }}
+                        >
+                          Epics
+                        </p>
+                        <p
+                          className="font-['Bricolage_Grotesque',sans-serif] text-[#0f0a1e] text-[20px]"
+                          style={{ fontWeight: 700 }}
+                        >
+                          {jira.epics.length}
+                        </p>
                       </div>
                       {jira?.stories && jira.stories.length > 0 && (
                         <div className="flex flex-col gap-[2px]">
-                          <p className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]" style={{ fontWeight: 600 }}>Stories</p>
-                          <p className="font-['Bricolage_Grotesque',sans-serif] text-[#0f0a1e] text-[20px]" style={{ fontWeight: 700 }}>{jira.stories.length}</p>
+                          <p
+                            className="font-['DM_Sans',sans-serif] text-[10px] text-[#8b87a0] uppercase tracking-[0.6px]"
+                            style={{ fontWeight: 600 }}
+                          >
+                            Stories
+                          </p>
+                          <p
+                            className="font-['Bricolage_Grotesque',sans-serif] text-[#0f0a1e] text-[20px]"
+                            style={{ fontWeight: 700 }}
+                          >
+                            {jira.stories.length}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -541,7 +588,8 @@ export function Overview() {
 
               {!isJiraConnected && (
                 <p className="font-['DM_Sans',sans-serif] text-[12px] text-[#8b87a0]">
-                  Connect Jira in Config to link epics and stories to your test cases.
+                  Connect Jira in Config to link epics and stories to your test
+                  cases.
                 </p>
               )}
             </div>
