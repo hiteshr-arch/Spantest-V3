@@ -1,0 +1,91 @@
+.script-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: $color-bg-white;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+
+    &-title {
+      @include font-heading(14px, 700);
+      color: $color-dark;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__sidebar {
+    // width is state-driven (open/collapsed), stays inline
+    flex-shrink: 0;
+    background: $color-bg-white;
+    border-right: 1px solid $color-border;
+    overflow: hidden;
+    transition: width 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__sidebar-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    @include font-body(12px, 400);
+    color: $color-text;
+    border-bottom: 1px solid $color-border;
+
+    &:hover {
+      background: $color-bg-app;
+    }
+
+    &--active {
+      background: $color-primary-soft;
+      color: $color-primary;
+      font-weight: 500;
+    }
+  }
+
+  &__code-area {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    background: #1e1e2e;
+    @include scrollbar-thin;
+  }
+
+  &__code {
+    @include font-mono(12px, 400);
+    padding: 16px;
+    white-space: pre;
+    line-height: 1.6;
+    color: #cdd6f4;
+  }
+
+  &__framework-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: $color-bg-app;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+
+    &-label {
+      @include font-body(11px, 600);
+      color: $color-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+  }
+}

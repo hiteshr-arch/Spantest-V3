@@ -1,0 +1,47 @@
+.project-layout {
+  &__sidebar {
+    width: $sidebar-width;
+    flex-shrink: 0;
+    background: $color-bg-white;
+    border-right: 1px solid $color-border;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px;
+  }
+
+  &__nav-section {
+    margin-bottom: 24px;
+  }
+
+  &__nav-label {
+    @include label-uppercase(10px, 600);
+    color: $color-subtle;
+    letter-spacing: 0.08em;
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+
+  &__nav-item {
+    @include nav-item-base;
+    font-size: 13px;
+
+    &.active,
+    &--active {
+      @include nav-item-active;
+    }
+
+    &:hover:not(.active):not(&--active) {
+      background: $color-bg-app;
+      color: $color-text;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+    background: $color-bg-app;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}

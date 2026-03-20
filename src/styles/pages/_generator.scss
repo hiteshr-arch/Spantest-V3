@@ -1,0 +1,21 @@
+.generator {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+
+  &__chat-panel {
+    width: $chat-panel-width;
+    flex-shrink: 0;
+    border-right: 1px solid $color-border;
+    background: $color-bg-white;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__results-panel {
+    flex: 1;
+    min-width: 0;
+    background: $color-bg-app;
+  }
+}

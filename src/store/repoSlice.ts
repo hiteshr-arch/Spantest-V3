@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { RepoFolder, RepoItem } from "../app/lib/mock-data";
-import { projectRepoFolders, projectRepoItems } from "../app/lib/mock-data";
+import type { RepoFolder, RepoItem } from "../lib/mock-data";
+import { projectRepoFolders, projectRepoItems } from "../lib/mock-data";
 
 interface RepoState {
   /** Folders keyed by projectId */

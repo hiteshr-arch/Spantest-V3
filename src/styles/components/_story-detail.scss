@@ -1,0 +1,85 @@
+.story-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: $color-bg-white;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+
+    &-title {
+      @include font-heading(14px, 700);
+      color: $color-dark;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 16px;
+    background: $color-bg-white;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+  }
+
+  &__tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: $radius-md;
+    border: none;
+    @include font-body(12px, 500);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    // background and color are state-driven, stays inline
+  }
+
+  &__content {
+    flex: 1;
+    overflow: auto;
+    padding: 16px;
+    @include scrollbar-thin;
+  }
+
+  &__info-label {
+    @include label-uppercase(10px, 600);
+    margin-bottom: 4px;
+  }
+
+  &__info-value {
+    @include font-body(13px, 400);
+    color: $color-text;
+  }
+
+  &__steps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+
+    th {
+      @include font-body(10px, 600);
+      color: $color-muted;
+      text-align: left;
+      padding: 8px 12px;
+      background: $color-bg-app;
+      border-bottom: 1px solid $color-border;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      @include font-body(12px, 400);
+      color: $color-text;
+      padding: 10px 12px;
+      border-bottom: 1px solid $color-border;
+      vertical-align: top;
+    }
+  }
+}

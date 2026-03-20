@@ -1,0 +1,174 @@
+.config {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: $color-bg-white;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__project-name {
+    @include font-heading(18px, 800);
+    color: $color-dark;
+  }
+
+  &__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    @include font-body(11px, 400);
+    color: $color-muted;
+  }
+
+  &__content {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__section {
+    background: $color-bg-white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    overflow: hidden;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-bottom: 1px solid $color-border;
+    }
+
+    &-icon {
+      color: $color-primary;
+      font-size: 14px;
+    }
+
+    &-title {
+      @include font-heading(13px, 700);
+      color: $color-dark;
+    }
+
+    &-body {
+      padding: 16px 20px;
+    }
+  }
+}
+
+// Mini stat card inside Config
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding: 12px;
+  border-radius: $radius-md;
+  background: $color-bg-app;
+  border: 1px solid $color-border;
+
+  &__value {
+    @include font-heading(24px, 800);
+    line-height: 1;
+    // color set inline (runtime prop)
+  }
+
+  &__label {
+    @include label-uppercase(10px, 600);
+    color: $color-muted;
+  }
+}
+
+// Attachment row
+.attachment-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  transition: background 0.15s;
+
+  &:hover {
+    background: $color-bg-alt;
+  }
+
+  &__type-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: $radius-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include font-body(9px, 800);
+    text-transform: uppercase;
+    flex-shrink: 0;
+    // bg and color set inline (runtime from FILE_TYPE_ICONS)
+  }
+
+  &__name {
+    @include font-body(12px, 500);
+    color: $color-dark;
+    display: block;
+    @include truncate;
+  }
+
+  &__meta {
+    @include font-body(10px, 400);
+    color: $color-muted;
+  }
+}
+
+// Activity timeline
+.activity-timeline {
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: $radius-full;
+    background: $color-primary;
+    flex-shrink: 0;
+  }
+
+  &__line {
+    width: 1px;
+    flex: 1;
+    background: $color-border;
+    margin-top: 3px;
+  }
+
+  &__action {
+    @include font-body(11px, 600);
+    color: $color-dark;
+  }
+
+  &__by {
+    @include font-body(10px, 400);
+    color: $color-muted;
+  }
+
+  &__detail {
+    @include font-body(10.5px, 400);
+    color: $color-text;
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  &__time {
+    @include font-body(9px, 400);
+    color: $color-border-light;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+  }
+}

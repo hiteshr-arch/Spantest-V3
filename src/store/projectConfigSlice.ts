@@ -7,7 +7,7 @@ import type {
   JiraProject,
   JiraSprint,
   JiraStory,
-} from "../app/lib/mock-data";
+} from "../lib/mock-data";
 import {
   mockProjectConfigs,
   projectJiraData,
@@ -16,7 +16,7 @@ import {
   mockJiraProjects,
   mockJiraSprints,
   mockJiraIssues,
-} from "../app/lib/mock-data";
+} from "../lib/mock-data";
 
 function buildEmptyConfig(projectId: string): ProjectConfig {
   const today = new Date().toISOString().split("T")[0];

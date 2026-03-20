@@ -1,0 +1,152 @@
+// ─── Ant Design component overrides ───────────────────────────────────────
+
+// Input
+.ant-input,
+.ant-input-affix-wrapper {
+  font-family: $font-body;
+  font-size: 13px;
+  border-color: $color-border;
+  border-radius: $radius-md;
+
+  &:hover,
+  &:focus,
+  &-focused {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px $color-primary-bg;
+  }
+}
+
+.ant-input-outlined {
+  background: $color-bg-white;
+}
+
+// TextArea
+.ant-input-textarea {
+  font-family: $font-body;
+}
+
+// Select
+.ant-select-selector {
+  font-family: $font-body;
+  font-size: 13px;
+  border-radius: $radius-md !important;
+  border-color: $color-border !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: $color-primary !important;
+  box-shadow: 0 0 0 2px $color-primary-bg !important;
+}
+
+// Table
+.ant-table {
+  font-family: $font-body;
+  font-size: 12px;
+
+  .ant-table-thead > tr > th {
+    background: $color-bg-app;
+    color: $color-muted;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid $color-border;
+    padding: 10px 16px;
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid $color-border;
+    padding: 10px 16px;
+    color: $color-text;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background: $color-bg-app;
+  }
+}
+
+// Modal
+.ant-modal-content {
+  border-radius: $radius-xl;
+  padding: 24px;
+}
+
+.ant-modal-title {
+  font-family: $font-heading;
+  font-size: 15px;
+  font-weight: 700;
+  color: $color-dark;
+}
+
+// Tags
+.ant-tag {
+  font-family: $font-body;
+  border-radius: $radius-full;
+  font-size: 10px;
+  font-weight: 600;
+  border: none;
+}
+
+// Tooltip
+.ant-tooltip-inner {
+  font-family: $font-body;
+  font-size: 11px;
+  border-radius: $radius-sm;
+}
+
+// Popover
+.ant-popover-inner {
+  border-radius: $radius-lg;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-dropdown;
+}
+
+// Dropdown
+.ant-dropdown-menu {
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-dropdown;
+  padding: 4px;
+
+  .ant-dropdown-menu-item {
+    font-family: $font-body;
+    font-size: 12px;
+    border-radius: $radius-sm;
+  }
+}
+
+// Checkbox
+.ant-checkbox-inner {
+  border-color: $color-border-dark;
+  border-radius: 4px;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background: $color-primary;
+  border-color: $color-primary;
+}
+
+// Message / notification
+.ant-message-notice-content {
+  font-family: $font-body;
+  border-radius: $radius-md;
+}
+
+// Header project select
+.header__project-select {
+  .ant-select-selector {
+    padding: 0 8px !important;
+    height: 28px !important;
+    line-height: 28px;
+  }
+
+  .ant-select-selection-item {
+    font-family: $font-body;
+    font-size: 13px;
+    font-weight: 600;
+    color: $color-dark;
+    line-height: 28px;
+  }
+}

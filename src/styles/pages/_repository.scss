@@ -1,0 +1,96 @@
+.repository {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+
+  &__tree-panel {
+    width: 240px;
+    flex-shrink: 0;
+    background: $color-bg-white;
+    border-right: 1px solid $color-border;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__table-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: $color-bg-white;
+    border-bottom: 1px solid $color-border;
+    flex-shrink: 0;
+
+    &-breadcrumb {
+      @include font-body(12px, 400);
+      color: $color-muted;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &-active {
+        @include font-body(12px, 600);
+        color: $color-text;
+      }
+    }
+
+    &-search {
+      @include font-body(12px, 400);
+    }
+
+    &-btn {
+      @include btn-ghost;
+      padding: 5px 10px;
+      font-size: 11px;
+      gap: 5px;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    &-label {
+      @include font-body(12px, 400);
+      color: $color-muted;
+    }
+  }
+}
+
+// Repo table column styles
+.repo-table {
+  &__name {
+    @include font-body(12px, 500);
+    color: $color-dark;
+    display: block;
+    @include truncate;
+  }
+
+  &__meta {
+    @include font-body(10px, 400);
+    color: $color-muted;
+  }
+
+  &__type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    @include font-body(10px, 600);
+  }
+}

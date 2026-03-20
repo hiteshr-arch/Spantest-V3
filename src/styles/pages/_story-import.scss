@@ -1,0 +1,159 @@
+.story-import {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+
+  &__left-panel {
+    width: 280px;
+    flex-shrink: 0;
+    border-right: 1px solid $color-border;
+    background: $color-bg-white;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__stories-panel {
+    flex: 1;
+    min-width: 0;
+    background: $color-bg-app;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: background 0.15s;
+    @include font-body(12.5px, 500);
+    color: $color-text;
+
+    &--active {
+      background: $color-primary-soft;
+      color: $color-primary;
+      font-weight: 600;
+    }
+
+    &:hover:not(&--active) {
+      background: $color-bg-alt;
+    }
+  }
+
+  &__count-badge {
+    margin-left: auto;
+    @include font-body(10px, 600);
+    min-width: 18px;
+    text-align: center;
+    border-radius: $radius-full;
+    padding: 1px 5px;
+    background: $color-border;
+    color: $color-muted;
+
+    &--active {
+      background: $color-primary-bg;
+      color: $color-primary;
+    }
+  }
+
+  &__epic-label {
+    @include label-uppercase(10px, 6000);
+    color: $color-muted;
+  }
+
+  &__epic-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: background 0.15s;
+    @include font-body(12px, 500);
+    margin-bottom: 2px;
+
+    &--active {
+      background: #fff7e6;
+    }
+
+    &:hover:not(&--active) {
+      background: $color-bg-alt;
+    }
+  }
+
+  &__story-row {
+    transition: background 0.15s;
+    cursor: pointer;
+
+    &:hover {
+      background: $color-bg-alt;
+    }
+
+    &--selected {
+      background: $color-bg-alt;
+    }
+  }
+
+  &__table-header {
+    @include font-body(11px, 600);
+    color: $color-muted;
+    background: $color-bg-white;
+    padding: 10px 16px;
+    border-bottom: 1px solid $color-border;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  &__linked-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+    background: $color-bg-white;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $color-bg-alt;
+    }
+
+    &--selected {
+      border-color: $color-primary;
+      background: $color-bg-alt;
+    }
+  }
+
+  &__action-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: $radius-md;
+    border: 1px solid $color-border-medium;
+    background: $color-bg-white;
+    @include font-body(11px, 500);
+    color: $color-text;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+
+    &:hover {
+      color: $color-primary;
+      border-color: $color-primary;
+    }
+
+    &--danger:hover {
+      color: $color-error;
+      border-color: $color-error;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

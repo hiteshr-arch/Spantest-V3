@@ -1,0 +1,107 @@
+.folder-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+
+  &__node {
+    // container for row + children
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: background 0.15s;
+    color: $color-text;
+
+    &:hover {
+      background: $color-bg-alt;
+    }
+
+    &--selected {
+      background: $color-primary-soft !important;
+      color: $color-primary !important;
+    }
+  }
+
+  &__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    color: $color-border-light;
+    transition: color 0.15s;
+
+    &--selected {
+      color: $color-primary;
+    }
+  }
+
+  &__icon {
+    font-size: 14px;
+    color: $color-border-light;
+
+    &--selected {
+      color: $color-primary;
+    }
+  }
+
+  &__name {
+    flex: 1;
+    @include truncate;
+    @include font-body(12.5px, 500);
+
+    &--selected {
+      font-weight: 600;
+    }
+  }
+
+  &__rename-input {
+    flex: 1;
+    font-size: 12px;
+    height: 22px;
+  }
+
+  &__count {
+    @include font-body(10px, 600);
+    min-width: 18px;
+    text-align: center;
+    border-radius: $radius-full;
+    padding: 1px 5px;
+    background: $color-border;
+    color: $color-muted;
+
+    &--selected {
+      background: $color-primary-bg;
+      color: $color-primary;
+    }
+  }
+
+  &__more {
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: $radius-sm;
+    color: $color-muted;
+    font-size: 12px;
+    transition: opacity 0.15s, background 0.15s;
+
+    &:hover {
+      background: #e9e6f4;
+    }
+  }
+
+  &__row:hover &__more,
+  &__row--selected &__more {
+    opacity: 1;
+  }
+}

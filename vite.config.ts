@@ -17,6 +17,16 @@ export default defineConfig({
     },
   },
 
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Silence @import deprecation warning — we use legacy @import intentionally
+        // for global variable/mixin cascading in the 7-1 architecture aggregator.
+        silenceDeprecations: ['import'],
+      },
+    },
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

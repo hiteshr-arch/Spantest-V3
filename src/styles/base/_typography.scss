@@ -1,0 +1,16 @@
+// Typography defaults — font imports are in fonts.css (loaded via @tailwind)
+body {
+  font-family: $font-body;
+  font-size: 14px;
+  color: $color-text;
+  background: $color-bg-app;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+  color: $color-dark;
+  line-height: 1.3;
+}

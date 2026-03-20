@@ -1,0 +1,155 @@
+// ─── Typography Mixins ─────────────────────────────────────────────────────
+@mixin font-heading($size: 14px, $weight: 600) {
+  font-family: $font-heading;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+@mixin font-body($size: 13px, $weight: 400) {
+  font-family: $font-body;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+@mixin font-mono($size: 12px, $weight: 400) {
+  font-family: $font-mono;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+@mixin label-uppercase($size: 11px, $weight: 600) {
+  @include font-body($size, $weight);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $color-muted;
+}
+
+// ─── Card Mixins ───────────────────────────────────────────────────────────
+@mixin card-shadow {
+  box-shadow: $shadow-card;
+}
+
+@mixin card-base {
+  background: $color-bg-white;
+  border-radius: $radius-2xl;
+  @include card-shadow;
+}
+
+// ─── Badge Mixins ──────────────────────────────────────────────────────────
+@mixin status-badge($bg, $color) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: $radius-full;
+  background: $bg;
+  color: $color;
+  @include font-body(11px, 600);
+}
+
+// ─── Navigation Mixins ─────────────────────────────────────────────────────
+@mixin nav-item-base {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: $radius-md;
+  @include font-body(13px, 500);
+  color: $color-muted;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+
+@mixin nav-item-hover {
+  background: rgba($color-primary, 0.06);
+  color: $color-text;
+}
+
+@mixin nav-item-active {
+  background: $color-primary-soft;
+  color: $color-primary;
+  font-weight: 600;
+}
+
+// ─── Button Mixins ─────────────────────────────────────────────────────────
+@mixin btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: $radius-md;
+  border: none;
+  background: $color-primary;
+  color: $color-bg-white;
+  @include font-body(13px, 600);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    background: #c4b5fd;
+    cursor: not-allowed;
+  }
+}
+
+@mixin btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border-medium;
+  background: $color-bg-white;
+  color: $color-text;
+  @include font-body(12px, 500);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: $color-bg-app;
+  }
+}
+
+// ─── Truncate ──────────────────────────────────────────────────────────────
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─── Scrollbar ─────────────────────────────────────────────────────────────
+@mixin scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: $color-border $color-bg-white;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-border;
+    border-radius: $radius-full;
+  }
+}
+
+// ─── Flex Utilities ────────────────────────────────────────────────────────
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

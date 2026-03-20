@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Project, ProjectConfig } from "../app/lib/mock-data";
+import type { Project, ProjectConfig } from "../lib/mock-data";
 import {
   projects as initialProjects,
   mockProjectConfigs as initialConfigs,
   projectRepoFolders,
   projectRepoItems,
   projectJiraData,
-} from "../app/lib/mock-data";
+} from "../lib/mock-data";
 
 interface ProjectsState {
   list: Project[];

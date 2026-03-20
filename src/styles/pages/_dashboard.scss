@@ -1,0 +1,53 @@
+.dashboard {
+  min-height: 100vh;
+  background: $color-bg-app;
+
+  &__content {
+    padding: 24px;
+  }
+
+  &__breadcrumb {
+    @include font-body(12px, 600);
+    color: $color-subtle;
+  }
+
+  &__title {
+    @include font-heading(24px, 600);
+    color: $color-dark;
+    line-height: 1.33;
+    letter-spacing: -0.03em;
+  }
+
+  &__subtitle {
+    @include font-body(14px, 400);
+    color: $color-muted;
+  }
+
+  &__search {
+    width: 220px;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+    font-size: 14px;
+  }
+
+  &__new-project-btn {
+    @include btn-primary;
+    border-radius: $radius-md;
+    font-size: 14px;
+    padding: 7px 12px;
+    white-space: nowrap;
+  }
+
+  &__stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  &__projects-title {
+    @include font-heading(16px, 600);
+    color: $color-dark;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+}

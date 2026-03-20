@@ -1,0 +1,57 @@
+// ─── SCSS 7-1 Architecture Entry Point ────────────────────────────────────
+// Using legacy @import so that variables and mixins cascade globally.
+// CSS foundation (fonts, tailwind, theme) is imported separately in main.tsx.
+
+// 1. Abstracts — outside layers (variables/mixins produce no CSS output)
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "abstracts/functions";
+
+// 2. Slot our CSS into Tailwind's layer order.
+//    Tailwind declares: @layer base, components, utilities
+//    This re-declaration is a no-op but makes intent explicit.
+@layer base, components, utilities;
+
+// 3. Base resets → @layer base (same level as Tailwind Preflight, below utilities)
+//    Tailwind utility classes like p-4, gap-6 correctly override these resets.
+@layer base {
+  @import "base/reset";
+  @import "base/colors";
+  @import "base/typography";
+}
+
+// 4–7. All component/layout/page/theme/vendor SCSS → @layer components
+//      Below @layer utilities so Tailwind utility classes always win when both apply.
+@layer components {
+  // Layout
+  @import "layout/app-layout";
+  @import "layout/header";
+  @import "layout/project-layout";
+  @import "layout/repository-layout";
+
+  // Components
+  @import "components/stat-card";
+  @import "components/project-card";
+  @import "components/create-project-modal";
+  @import "components/folder-tree";
+  @import "components/generator-chat";
+  @import "components/scenario-table";
+  @import "components/save-repo-modal";
+  @import "components/script-view";
+  @import "components/story-detail";
+
+  // Pages
+  @import "pages/dashboard";
+  @import "pages/overview";
+  @import "pages/config";
+  @import "pages/generator";
+  @import "pages/repository";
+  @import "pages/story-import";
+
+  // Themes
+  @import "themes/antd-overrides";
+
+  // Vendors
+  @import "vendors/antd";
+  @import "vendors/recharts";
+}

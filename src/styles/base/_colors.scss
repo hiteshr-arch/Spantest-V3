@@ -1,0 +1,14 @@
+// CSS custom properties bridge for runtime theming
+:root {
+  --color-primary:        #{$color-primary};
+  --color-primary-light:  #{$color-primary-light};
+  --color-primary-soft:   #{$color-primary-soft};
+  --color-dark:           #{$color-dark};
+  --color-text:           #{$color-text};
+  --color-muted:          #{$color-muted};
+  --color-bg-app:         #{$color-bg-app};
+  --color-bg-white:       #{$color-bg-white};
+  --color-border:         #{$color-border};
+  --color-success:        #{$color-success};
+  --color-error:          #{$color-error};
+}

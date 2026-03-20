@@ -1,0 +1,15 @@
+// Recharts vendor styles
+// Chart tick fonts and colors are configured via JS props in the components
+// (recharts does not support CSS-based font config for SVG text elements)
+.recharts-wrapper {
+  font-family: $font-body;
+}
+
+.recharts-tooltip-wrapper {
+  .recharts-default-tooltip {
+    font-family: $font-body;
+    font-size: 12px;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+  }
+}
